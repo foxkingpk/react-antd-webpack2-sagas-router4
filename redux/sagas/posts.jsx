@@ -28,7 +28,7 @@ function* loginRequest() {
   yield put({ type: LOGIN, loginResult });
 }
 function logout() {
-  return axios.get(`http://localhost/xxx/logout`).then((response) => {
+  return axios.get("http://localhost/xxx/logout").then((response) => {
     const { status } = response;
     console.log(status);
     return {
@@ -51,11 +51,12 @@ function* logoutRequest() {
 //     yield fork(fetchPosts);
 //    }
 // }
-export function* watchPost() {
-  while(true){
-   yield take(LOGIN_REQUEST);
-   yield fork(loginRequest);
-   yield take(LOGOUT_REQUEST);
-   yield fork(logoutRequest);
+export function* signin() {
+  while (true) {
+    yield take(LOGIN_REQUEST);
+    yield fork(loginRequest);
+    yield take(LOGOUT_REQUEST);
+    yield fork(logoutRequest);
   }
 }
+

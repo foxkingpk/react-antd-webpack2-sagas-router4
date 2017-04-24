@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Input } from 'antd';
+import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login } from 'REDUX/actions/user.jsx';
 
@@ -9,13 +10,15 @@ class Login extends React.Component {
   }
   componentDidMount() {
   }
-  componentWillReceiveProps(nextProps) {
-    nextProps.history.push('/');
-  }
+
   login() {
     this.props.login("login");
   }
   render() {
+    const { from } = this.props.location.state || { from: { pathname: '/' } };
+    if (this.props.isLogin) {
+      return (<Redirect to={from.pathname} />);
+    }
     return (
       <div style={{ height: '100vh', background: 'rgba(0, 0, 0, .5)' }}>
         <div style={{ width: 300, height: 280, background: 'white', boxShadow: '0 0 100px rgba(0,0,0,.6)', borderRadius: 5, position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
@@ -50,4 +53,4 @@ function mapDispatchToProp(dispatch) {
   };
 }
 
-export default connect(mapStateToProp, mapDispatchToProp)(Login);
+export default connect(mapStateToProp, mapDispatchToProp)(withRouter(Login));

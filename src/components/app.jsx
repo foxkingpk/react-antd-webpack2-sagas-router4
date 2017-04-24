@@ -1,12 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Layout, Menu, Breadcrumb, Row, Col, Icon, Modal, Button, Input } from 'antd';
-import { Route, Link } from 'react-router-dom';
+import { Route, Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Dash from './dash.jsx';
 import NewProgram from './newProgram.jsx';
 import PublishProgram from './publishProgram.jsx';
 import { requestData, logout } from 'REDUX/actions/user.jsx';
+import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
 import 'MOCKJS';
 import 'ASSETS/less/app.less'
 
@@ -22,27 +23,18 @@ class App extends React.Component {
       pagination: { total: 20 },
       data: [],
       loading: false,
-      current: 'newProgram',
-      openKeys: ['program'],
+      current: '',
+      openKeys: [''],
       passwdDlg: false
     };
   }
   componentDidMount() {
-    console.log(this.props);
-    if (!this.props.isLogin) {
-      this.props.history.push('/login');
-    }
+
   }
-  componentWillReceiveProps(nextProps) {
-    console.log("componentWillReceiveProps");
-    if (!nextProps.isLogin) {
-      nextProps.history.push('/login');
-    }
-  }
+
   onOpenChange(openKeys) {
-    const state = this.state;
-    const latestOpenKey = openKeys.find(key => !(state.openKeys.indexOf(key) > -1));
-    const latestCloseKey = state.openKeys.find(key => !(openKeys.indexOf(key) > -1));
+    const latestOpenKey = openKeys.find(key => !(this.props.openKeys.indexOf(key) > -1));
+    const latestCloseKey = this.props.openKeys.find(key => !(openKeys.indexOf(key) > -1));
 
     let nextOpenKeys = [];
     if (latestOpenKey) {
@@ -51,7 +43,8 @@ class App extends React.Component {
     if (latestCloseKey) {
       nextOpenKeys = this.getAncestorKeys(latestCloseKey);
     }
-    this.setState({ openKeys: nextOpenKeys });
+
+    this.props.setOpenKeys(nextOpenKeys);
   }
   getAncestorKeys(key) {
     const map = {
@@ -61,11 +54,12 @@ class App extends React.Component {
   }
   menuClick(e) {
     console.log(e.key);
-    this.setState({
-      current: e.key
-    }, function () {
-      console.log(this.state.current);
-    });
+    this.props.setCurrentItem(e.key);
+    // this.setState({
+    //   current: e.key
+    // }, function () {
+    //   console.log(this.state.current);
+    // });
   }
   toggle() {
     this.setState({
@@ -104,10 +98,12 @@ class App extends React.Component {
     });
   }
   send() {
-    console.log("senddata");
     this.props.sendData();
   }
   render() {
+    if (!this.props.isLogin) {
+      return (<Redirect to="/login" />);
+    }
     return (<div style={{ height: '100vh' }}>
       <Layout>
         <Header>
@@ -133,7 +129,7 @@ class App extends React.Component {
         </Header>
         <Layout>
           <Sider breakpoint="lg" style={{ backgroundColor: 'white' }} collapsedWidth="0">
-            <Menu mode="inline" style={{ height: 'calc(100vh - 142px)' }} openKeys={this.state.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.state.current]} >
+            <Menu mode="inline" style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
               <Menu.Item key="dash">
                 <Link to="/dash">仪表板</Link>
               </Menu.Item>
@@ -158,10 +154,10 @@ class App extends React.Component {
               <Breadcrumb.Item>List</Breadcrumb.Item>
               <Breadcrumb.Item>App</Breadcrumb.Item>
             </Breadcrumb>
-            <div style={{ background: "#fff", height: 'calc(100vh - 184px)', color: "green" }}>
+            <div style={{ background: '#fff', height: 'calc(100vh - 184px)', color: 'green' }}>
               <Route path="/dash" component={Dash} />
-              <Route path="/newProgram" component={NewProgram} />
-              <Route path="/publishProgram" component={PublishProgram} />
+              <Route path="/newprogram" component={NewProgram} />
+              <Route path="/publishprogram" component={PublishProgram} />
               <div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.posts ? this.props.posts.data.data : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
@@ -175,10 +171,15 @@ class App extends React.Component {
                 onOk={this.handleOk.bind(this)}
                 onCancel={this.handleCancel.bind(this)}
                 footer={[
-                  <Button key="back" size="large" onClick={this.handleCancel.bind(this)}>
+                  <Button
+                    key="back" size="large" onClick={this.handleCancel.bind(this)}
+                  >
                     取消
                   </Button>,
-                  <Button key="submit" type="primary" size="large" loading={this.state.loading} onClick={this.handleOk.bind(this)}>
+                  <Button
+                    key="submit" type="primary" size="large"
+                    loading={this.state.loading} onClick={this.handleOk.bind(this)}
+                  >
                     修改
                   </Button>
                 ]}
@@ -187,7 +188,7 @@ class App extends React.Component {
                 <Input placeholder="请输入新密码" style={{ marginTop: 20 }} />
                 <Input placeholder="请再次输入新密码" style={{ marginTop: 20 }} />
               </Modal>
-              </div>
+            </div>
           </Content>
         </Layout>
         <Footer style={{ textAlign: 'center', fontSize: 20 }}>
@@ -201,7 +202,9 @@ class App extends React.Component {
 function mapStateToProp(state) {
   return {
     isLogin: state.loginReducer.isLogin,
-    posts: state.loginReducer.posts
+    posts: state.loginReducer.posts,
+    current: state.menuReducer.currentItem,
+    openKeys: state.menuReducer.openKeys
   };
 }
 
@@ -212,8 +215,14 @@ function mapDispatchToProp(dispatch) {
     },
     sendData: (data) => {
       dispatch(requestData(data));
+    },
+    setOpenKeys: (data) => {
+      dispatch(setOpenKeys(data));
+    },
+    setCurrentItem: (data) => {
+      dispatch(setCurrentItem(data));
     }
   };
 }
 
-export default connect(mapStateToProp, mapDispatchToProp)(App);
+export default connect(mapStateToProp, mapDispatchToProp)(withRouter(App));

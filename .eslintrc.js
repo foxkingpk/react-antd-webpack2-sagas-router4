@@ -33,6 +33,7 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": [0],
     "no-nested-ternary": [0],
     "arrow-body-style": [0],
+    "linebreak-style": ["error", "windows"],
     "import/extensions": [0],
     "no-bitwise": [0],
     "no-cond-assign": [0],
