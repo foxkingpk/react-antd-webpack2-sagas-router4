@@ -7,7 +7,7 @@ const isLogin = () => {
   }
   return false;
 };
-const loginReducer = (state = {
+const userReducer = (state = {
   isLogin: isLogin(),
   posts: ''
 }, action) => {
@@ -37,4 +37,4 @@ const loginReducer = (state = {
       return state;
   }
 };
-export default loginReducer;
+export default userReducer;

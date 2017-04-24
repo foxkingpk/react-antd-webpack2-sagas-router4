@@ -1,18 +1,14 @@
 import {
   put,
-  call,
-  take,
-  fork
+  call
 } from 'redux-saga/effects';
 import { takeEvery } from 'redux-saga';
 import axios from 'axios';
 import 'babel-polyfill';
 import { LOGOUT_REQUEST, LOGOUT } from '../actions/actionstype.js';
 
-
-
 function logout() {
-  return axios.get("http://localhost/xxx/logout").then((response) => {
+  return axios.get('http://localhost/xxx/logout').then((response) => {
     const { status } = response;
     console.log(status);
     return {

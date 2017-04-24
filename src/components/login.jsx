@@ -42,7 +42,7 @@ class Login extends React.Component {
 }
 function mapStateToProp(state) {
   return {
-    isLogin: state.loginReducer.isLogin
+    isLogin: state.userReducer.isLogin
   };
 }
 function mapDispatchToProp(dispatch) {

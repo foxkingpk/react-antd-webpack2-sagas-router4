@@ -201,8 +201,8 @@ class App extends React.Component {
 
 function mapStateToProp(state) {
   return {
-    isLogin: state.loginReducer.isLogin,
-    posts: state.loginReducer.posts,
+    isLogin: state.userReducer.isLogin,
+    posts: state.userReducer.posts,
     current: state.menuReducer.currentItem,
     openKeys: state.menuReducer.openKeys
   };
