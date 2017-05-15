@@ -12,7 +12,7 @@ const menuReducer = (state = {
       };
     case OPENKEYS:
       return {
-        currentItem: '',
+        ...state,
         openKeys: action.payload
       };
     default:

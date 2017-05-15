@@ -9,7 +9,8 @@ import 'MOCKJS';
 import 'ASSETS/less/app.less';
 import Logo from 'ASSETS/imgs/logo.svg';
 
-import OrdersCenter from './orderscenter.jsx';
+import OrderListNew from './orderlistnew.jsx';
+import OrderListFinish from './orderlistfinish.jsx';
 import PrintMachineManager from './printmachinemanager.jsx';
 import PrintTemplate from './printtemplate.jsx';
 
@@ -27,7 +28,9 @@ class App extends React.Component {
       loading: false,
       current: '',
       openKeys: [''],
-      passwdDlg: false
+      passwdDlg: false,
+      collapsed: false,
+      mode: 'inline',
     };
   }
   componentDidMount() {
@@ -97,6 +100,13 @@ class App extends React.Component {
   send() {
     this.props.sendData();
   }
+  onCollapse(collapsed) {
+    console.log(collapsed);
+    this.setState({
+      collapsed,
+      mode: collapsed ? 'vertical' : 'inline',
+    });
+  }
   render() {
     if (!this.props.authenticated) {
       return (<Redirect to="/login" />);
@@ -125,14 +135,19 @@ class App extends React.Component {
           </Row>
         </Header>
         <Layout>
-          <Sider breakpoint="lg" style={{ backgroundColor: 'white' }} collapsedWidth="0">
-            <Menu mode="inline" style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
-              <Menu.Item key="orders">
-                <Link to="/ordersCenter">订单中心</Link>
-              </Menu.Item>
-              <SubMenu key="print" title="快递单打印">
+          <Sider className="sider" style={{ backgroundColor: 'white' }}  collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
+            <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
+              <SubMenu key="ordersCenter" title={<span><Icon type="solution" /><span className="nav-text">订单中心</span></span>}>
+                <Menu.Item key="orderListNew">
+                  <Link to="/orderListNew">未发货订单</Link>
+                </Menu.Item>
+                <Menu.Item key="orderListFinish">
+                  <Link to="/orderListFinish">已发货订单</Link>
+                </Menu.Item>
+              </SubMenu>
+              <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
                 <Menu.Item key="printTemplate">
-                  <Link to="/printTemplate">快递单模板</Link>
+                  <Link to="/printTemplate">寄件人设置</Link>
                 </Menu.Item>
                 <Menu.Item key="printMachineManager">
                   <Link to="/printMachineManager">打印机管理</Link>
@@ -142,8 +157,9 @@ class App extends React.Component {
           </Sider>
           <Content>
             <div style={{ background: '#fff', height: 'calc(100vh - 142px)', color: 'green' }}>
-              <Route exact path="/" component={OrdersCenter} />
-              <Route path="/ordersCenter" component={OrdersCenter} />
+              <Route exact path="/" component={OrderListNew} />
+              <Route path="/orderListNew" component={OrderListNew} />
+              <Route path="/orderListFinish" component={OrderListFinish} />
               <Route path="/printTemplate" component={PrintTemplate} />
               <Route path="/printMachineManager" component={PrintMachineManager} />
               <div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>

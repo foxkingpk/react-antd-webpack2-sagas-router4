@@ -10,17 +10,21 @@ export const init = (store) => {
   //根据当前的url路径，设置对应的sidebar高亮
   const location = window.location;
   if (location.pathname.match(/\/$/)) {
-    store.dispatch(setCurrentItem('orders'));
+    store.dispatch(setOpenKeys(['ordersCenter']));
+    store.dispatch(setCurrentItem('orderListNew'));
   } else {
-    if (location.pathname.match(/\/ordersCenter$/g)) {
-      store.dispatch(setCurrentItem('orders'));
-    } else {
+    if (location.pathname.match(/\/orderListNew$/g)) {
+      store.dispatch(setOpenKeys(['ordersCenter']));
+      store.dispatch(setCurrentItem('orderListNew'));
+    } else if (location.pathname.match(/\/orderListFinish$/g)) {
+      store.dispatch(setOpenKeys(['ordersCenter']));
+      store.dispatch(setCurrentItem('orderListFinish'));
+    } else if (location.pathname.match(/\/printMachineManager$/g)) {
       store.dispatch(setOpenKeys(['print']));
-      if (location.pathname.match(/\/printMachineManager$/g)) {
-        store.dispatch(setCurrentItem('printMachineManager'));
-      } else if (location.pathname.match(/\/printTemplate$/g)) {
-        store.dispatch(setCurrentItem('printTemplate'));
-      }
+      store.dispatch(setCurrentItem('printMachineManager'));
+    } else if (location.pathname.match(/\/printTemplate$/g)) {
+      store.dispatch(setOpenKeys(['print']));
+      store.dispatch(setCurrentItem('printTemplate'));
     }
   }
 };

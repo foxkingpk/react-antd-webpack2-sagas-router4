@@ -21,7 +21,7 @@ const columns = [{
   key: 'address',
   dataIndex: 'address'
 }];
-class OrdersCenter extends React.Component {
+class OrderListNew extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -60,4 +60,4 @@ class OrdersCenter extends React.Component {
   }
 }
 
-export default OrdersCenter;
+export default OrderListNew;
