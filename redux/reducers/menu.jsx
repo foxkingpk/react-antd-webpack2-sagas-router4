@@ -1,19 +1,19 @@
 import { DEFAULTITEM, OPENKEYS } from '../actions/actionstype.js';
 
 const menuReducer = (state = {
-  currentItem: '',
+  currentItem: 'orders',
   openKeys: ['']
 }, action) => {
   switch (action.type) {
     case DEFAULTITEM:
       return {
         ...state,
-        currentItem: action.data
+        currentItem: action.payload
       };
     case OPENKEYS:
       return {
         currentItem: '',
-        openKeys: action.data
+        openKeys: action.payload
       };
     default:
       return state;

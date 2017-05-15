@@ -4,40 +4,34 @@ import {
   take,
   fork
 } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
-import axios from 'axios';
+
+import API from 'API';
 import 'babel-polyfill';
-import { LOGIN_REQUEST, LOGIN } from '../actions/actionstype.js';
+import { LOGIN_REQUEST } from 'REDUX/actions/actionstype';
+import { loginSuccess, loginFailure } from 'REDUX/actions/user';
 
 
-function login() {
-  return axios.get(`http://localhost/xxx/login`).then((response) => {
-    const { status } = response;
-    console.log(status);
-    return {
-      status,
-      data: response.data
-    };
-  }).then((response) => {
-    return response;
-  });
+function login(data) {
+  return API.getLoginResource(data);
 }
 
-function* loginRequest() {
-  const loginResult = yield call(login);
-  yield put({ type: LOGIN, loginResult });
+function* loginRequest(data) {
+  const response = yield call(login, data);
+  console.log("loginRequest",response);
+  if (response.data.code === 200) {
+    yield put(loginSuccess(response.data.payload.token));
+  } else {
+    yield put(loginFailure({
+      code: response.data.code,
+      msg: response.data.msg
+    }));
+  }
 }
 
-// export function* watchPost() {
-//    while(true){
-//     yield take('NND');
-//     yield fork(fetchPosts);
-//    }
-// }
 export function* signin() {
   while (true) {
-    yield take(LOGIN_REQUEST);
-    yield fork(loginRequest);
+    const payload = yield take(LOGIN_REQUEST);
+    yield fork(loginRequest, payload.data);
   }
 }
 

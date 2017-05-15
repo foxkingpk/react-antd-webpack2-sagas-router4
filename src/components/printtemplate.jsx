@@ -1,15 +1,15 @@
 import React from 'react';
 
-class PublishProgram extends React.Component {
+class PrintTemplate extends React.Component {
   constructor() {
     super();
     this.state = { someKey: 'someValue' };
   }
 
   render() {
-    return <p>
+    return <div>
         <h3>发布节目</h3>
-    </p>;
+      </div>;
   }
 
   componentDidMount() {
@@ -17,4 +17,4 @@ class PublishProgram extends React.Component {
   }
 }
 
-export default PublishProgram;
+export default PrintTemplate;

@@ -1,15 +1,17 @@
 import React from 'react';
 import axios from 'axios';
-import { Layout, Menu, Breadcrumb, Row, Col, Icon, Modal, Button, Input } from 'antd';
+import { Layout, Menu, Row, Col, Icon, Modal, Button, Input } from 'antd';
 import { Route, Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import Dash from './dash.jsx';
-import NewProgram from './newProgram.jsx';
-import PublishProgram from './publishProgram.jsx';
-import { requestData, logout } from 'REDUX/actions/user.jsx';
+import { requestData, logoutRequest } from 'REDUX/actions/user';
 import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
 import 'MOCKJS';
-import 'ASSETS/less/app.less'
+import 'ASSETS/less/app.less';
+import Logo from 'ASSETS/imgs/logo.svg';
+
+import OrdersCenter from './orderscenter.jsx';
+import PrintMachineManager from './printmachinemanager.jsx';
+import PrintTemplate from './printtemplate.jsx';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -55,11 +57,6 @@ class App extends React.Component {
   menuClick(e) {
     console.log(e.key);
     this.props.setCurrentItem(e.key);
-    // this.setState({
-    //   current: e.key
-    // }, function () {
-    //   console.log(this.state.current);
-    // });
   }
   toggle() {
     this.setState({
@@ -101,7 +98,7 @@ class App extends React.Component {
     this.props.sendData();
   }
   render() {
-    if (!this.props.isLogin) {
+    if (!this.props.authenticated) {
       return (<Redirect to="/login" />);
     }
     return (<div style={{ height: '100vh' }}>
@@ -109,12 +106,12 @@ class App extends React.Component {
         <Header>
           <Row>
             <Col xs={24} lg={4}>
-              <img alt="logo" src="ASSETS/imgs/logo.svg" className="logo" />
+              <img alt="logo" src={Logo} className="logo" />
             </Col>
             <Col xs={0} lg={20}>
               <div className="user">
                 <Menu mode="horizontal" className="menu">
-                  <SubMenu key="" title={<span><Icon type="user" />Admin</span>}>
+                  <SubMenu className="item" key="" title={<span><Icon type="user" />Admin</span>}>
                     <Menu.Item key="passwd">
                       <div onClick={this.modifyPasswd.bind(this)}>修改密码</div>
                     </Menu.Item>
@@ -130,36 +127,27 @@ class App extends React.Component {
         <Layout>
           <Sider breakpoint="lg" style={{ backgroundColor: 'white' }} collapsedWidth="0">
             <Menu mode="inline" style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
-              <Menu.Item key="dash">
-                <Link to="/dash">仪表板</Link>
+              <Menu.Item key="orders">
+                <Link to="/ordersCenter">订单中心</Link>
               </Menu.Item>
-              <SubMenu key="program" title="节目管理">
-                <Menu.Item key="newProgram">
-                  <Link to="/newProgram">新建节目</Link>
+              <SubMenu key="print" title="快递单打印">
+                <Menu.Item key="printTemplate">
+                  <Link to="/printTemplate">快递单模板</Link>
                 </Menu.Item>
-                <Menu.Item key="publishProgram">
-                  <Link to="/publishProgram">发布节目</Link>
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu key="material" title="素材管理">
-                <Menu.Item key="upload">
-                  <Link to="/dash">上传素材</Link>
+                <Menu.Item key="printMachineManager">
+                  <Link to="/printMachineManager">打印机管理</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>
           </Sider>
           <Content>
-            <Breadcrumb style={{ margin: '12px 0' }}>
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
-            </Breadcrumb>
-            <div style={{ background: '#fff', height: 'calc(100vh - 184px)', color: 'green' }}>
-              <Route path="/dash" component={Dash} />
-              <Route path="/newprogram" component={NewProgram} />
-              <Route path="/publishprogram" component={PublishProgram} />
+            <div style={{ background: '#fff', height: 'calc(100vh - 142px)', color: 'green' }}>
+              <Route exact path="/" component={OrdersCenter} />
+              <Route path="/ordersCenter" component={OrdersCenter} />
+              <Route path="/printTemplate" component={PrintTemplate} />
+              <Route path="/printMachineManager" component={PrintMachineManager} />
               <div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
-                <h3>数据：{this.props.posts ? this.props.posts.data.data : '无数据' }</h3>
+                <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
               </div>
             </div>
@@ -177,7 +165,7 @@ class App extends React.Component {
                     取消
                   </Button>,
                   <Button
-                    key="submit" type="primary" size="large"
+                    key="submit" type="primary" size="large" disabled={this.props.isAuthenticating}
                     loading={this.state.loading} onClick={this.handleOk.bind(this)}
                   >
                     修改
@@ -192,7 +180,7 @@ class App extends React.Component {
           </Content>
         </Layout>
         <Footer style={{ textAlign: 'center', fontSize: 20 }}>
-          园区物联网平台 版权所有 © 2017 由 XXX科技有限责任公司 支持
+          XXX订单管理系统 版权所有 © 2017 由 XXX科技有限责任公司 支持
         </Footer>
       </Layout>
     </div>);
@@ -201,8 +189,9 @@ class App extends React.Component {
 
 function mapStateToProp(state) {
   return {
-    isLogin: state.userReducer.isLogin,
-    posts: state.userReducer.posts,
+    authenticated: state.userReducer.authenticated,
+    isAuthenticating: state.userReducer.isAuthenticating,
+    customData: state.userReducer.customData,
     current: state.menuReducer.currentItem,
     openKeys: state.menuReducer.openKeys
   };
@@ -210,8 +199,8 @@ function mapStateToProp(state) {
 
 function mapDispatchToProp(dispatch) {
   return {
-    logout: (data) => {
-      dispatch(logout(data));
+    logout: () => {
+      dispatch(logoutRequest());
     },
     sendData: (data) => {
       dispatch(requestData(data));

@@ -1,37 +1,50 @@
-import { LOGIN, LOGOUT, RECIVE_DATA } from '../actions/actionstype.js';
+import { message } from 'antd';
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, RECIVE_DATA } from '../actions/actionstype.js';
 
-const isLogin = () => {
-  const loginCookie = document.cookie.match(/XID=([^;]\w*)/);
-  if (loginCookie && loginCookie[1]) {
-    return true;
-  }
-  return false;
-};
+
 const userReducer = (state = {
-  isLogin: isLogin(),
-  posts: ''
+  authenticated: false,
+  isAuthenticating: false,
+  customData: '',
+  token: '',
+  statusText: ''
 }, action) => {
-  switch(action.type) {
-    case LOGIN:
-      const res = action.loginResult;
-      let signed = false;
-      if (res.status === 200) {
-        document.cookie = `XID=${res.data.token}`;
-        signed = true;
-      }
-
+  switch (action.type) {
+    case LOGIN_REQUEST:
       return {
-        isLogin: signed
+        ...state,
+        isAuthenticating: true
       };
-    case LOGOUT:
-      document.cookie = 'XID==0;expires=' + new Date(0).toUTCString(); 
+    case LOGIN_SUCCESS:
       return {
-        isLogin: false
+        ...state,
+        authenticated: true,
+        isAuthenticating: false,
+        token: action.payload.token
+      };
+    case LOGIN_FAILURE:
+       message.error(action.payload.msg);
+      return {
+        ...state,
+        authenticated: false,
+        isAuthenticating: false,
+        token: '',
+        statusText: action.payload.msg
+      };
+    case LOGOUT_REQUEST:
+      return state;
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        authenticated: false,
+        isAuthenticating: false,
+        token: null,
+        statusText: ''
       };
     case RECIVE_DATA:
       return {
         ...state,
-        posts: action.loginResult
+        customData: action.payload
       };
     default:
       return state;

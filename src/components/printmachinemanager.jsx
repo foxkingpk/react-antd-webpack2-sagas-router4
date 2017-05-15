@@ -1,6 +1,6 @@
 import React from 'react';
 
-class NewProgram extends React.Component {
+class OrdersCenter extends React.Component {
   constructor() {
     super();
     this.state = { someKey: 'someValue' };
@@ -17,4 +17,4 @@ class NewProgram extends React.Component {
   }
 }
 
-export default NewProgram;
+export default OrdersCenter;

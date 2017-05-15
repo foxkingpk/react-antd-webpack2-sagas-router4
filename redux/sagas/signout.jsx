@@ -3,26 +3,23 @@ import {
   call
 } from 'redux-saga/effects';
 import { takeEvery } from 'redux-saga';
-import axios from 'axios';
+import API from 'API';
 import 'babel-polyfill';
-import { LOGOUT_REQUEST, LOGOUT } from '../actions/actionstype.js';
+import { LOGOUT_REQUEST } from 'REDUX/actions/actionstype';
+import { logoutSuccess } from 'REDUX/actions/user';
+import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
 
 function logout() {
-  return axios.get('http://localhost/xxx/logout').then((response) => {
-    const { status } = response;
-    console.log(status);
-    return {
-      status,
-      data: response.data
-    };
-  }).then((response) => {
-    return response;
-  });
+  return API.getLogoputResource();
 }
 
 function* logoutRequest() {
-  const logoutResult = yield call(logout);
-  yield put({ type: LOGOUT, logoutResult });
+  const key = [''];
+  const item = 'orders';
+  yield call(logout);
+  yield put(logoutSuccess());
+  yield put(setOpenKeys(key));
+  yield put(setCurrentItem(item));
 }
 
 export function* signout() {

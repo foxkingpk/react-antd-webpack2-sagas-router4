@@ -1,20 +1,27 @@
 import React from 'react';
-import axios from 'axios';
+import API from 'API';
 import { Table } from 'antd';
 
 const columns = [{
-  title: '姓名',
-  dataIndex: 'name',
+  title: '编号',
+  key: 'id',
+  dataIndex: 'id',
   width: '20%',
   sorter: true
 }, {
-  title: '年龄',
-  dataIndex: 'age'
+  title: '手机号',
+  key: 'phone',
+  dataIndex: 'phone'
 }, {
-  title: '性别',
-  dataIndex: 'sex'
+  title: '订单时间',
+  key: 'time',
+  dataIndex: 'time'
+}, {
+  title: '地址',
+  key: 'address',
+  dataIndex: 'address'
 }];
-class Dash extends React.Component {
+class OrdersCenter extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -28,17 +35,10 @@ class Dash extends React.Component {
     this.request(1);
   }
   request(pageNumber) {
-    axios.get(`http://localhost:9210/data${pageNumber}.txt`).then((response) => {
-      const { status } = response;
-      console.log(response);
-      return {
-        status,
-        data: response.data
-      };
-    }).then((data) => {
-      console.log(data);
+    API.getOrders().then((res) => {
+      console.log(res);
       this.setState({
-        data: data.data.data
+        data: res.data.data
       });
     });
   }
@@ -50,7 +50,7 @@ class Dash extends React.Component {
     return <div>
         <Table
             columns={columns}
-            rowKey={record => record.registered}
+            rowKey={record => record.id}
             dataSource={this.state.data}
             pagination={this.state.pagination}
             loading={this.state.loading}
@@ -60,4 +60,4 @@ class Dash extends React.Component {
   }
 }
 
-export default Dash;
+export default OrdersCenter;

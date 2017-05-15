@@ -1,40 +1,78 @@
 import React from 'react';
-import { Button, Input } from 'antd';
+import { Form, Button, Input, Icon } from 'antd';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login } from 'REDUX/actions/user.jsx';
+import { loginRequest } from 'REDUX/actions/user';
+import Logo from 'ASSETS/imgs/logo.svg';
+
+const FormItem = Form.Item;
 
 class Login extends React.Component {
   constructor() {
     super();
+    this.state = {
+      username: '',
+      password: ''
+    };
   }
   componentDidMount() {
   }
-
-  login() {
-    this.props.login("login");
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.login({
+          username: this.state.username,
+          password: this.state.password
+        });
+      }
+    });
   }
+  handleChange(event) {
+    const name = event.target.name;
+    this.setState({
+      [name]: event.target.value
+    });
+  }
+
   render() {
     const { from } = this.props.location.state || { from: { pathname: '/' } };
-    if (this.props.isLogin) {
+    if (this.props.authenticated) {
       return (<Redirect to={from.pathname} />);
     }
+    const { getFieldDecorator } = this.props.form;
     return (
       <div style={{ height: '100vh', background: 'rgba(0, 0, 0, .5)' }}>
         <div style={{ width: 300, height: 280, background: 'white', boxShadow: '0 0 100px rgba(0,0,0,.6)', borderRadius: 5, position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }}>
           <div style={{ height: '100%', padding: '0 20px' }}>
             <div style={{ textAlign: "center", marginTop: 20 }}>
-              <img alt="logo" src="ASSETS/imgs/logo.svg" style={{ width: 80, verticalAlign: 'middle' }} />
+              <img alt="logo" src={Logo} style={{ width: 80, verticalAlign: 'middle' }} />
             </div>
-            <div style={{ marginTop: 20 }}>
-              <Input size="large" placeholder="请输入用户名" />
-            </div>
-            <div style={{ marginTop: 20 }}>
-              <Input size="large" placeholder="请输入密码" />
-            </div>
-            <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', padding: '0 20px' }}>
-              <Button type="primary" onClick={this.login.bind(this)} style={{ width: '100%' }}>登录</Button>
-            </div>
+            <Form onSubmit={this.handleSubmit.bind(this)} >
+              <FormItem>
+                {
+                  getFieldDecorator('userName', {
+                    rules: [{ required: true, message: '用户名不能为空!' }]
+                  })(
+                    <div style={{ marginTop: 10 }}>
+                      <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} size="large" name="username" placeholder="请输入用户名" onChange={this.handleChange.bind(this)} />
+                    </div>
+                  )}
+              </FormItem>
+              <FormItem>
+                {
+                   getFieldDecorator('password', {
+                     rules: [{ required: true, message: '密码不能为空！' }]
+                   })(
+                     <div style={{ marginTop: 10 }}>
+                       <Input prefix={<Icon type="lock" style={{ fontSize: 13 }} />} size="large" type="password" name="password" placeholder="请输入密码" onChange={this.handleChange.bind(this)} />
+                     </div>
+                )}
+              </FormItem>
+              <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', padding: '0 20px' }}>
+                <Button type="primary" htmlType="submit" loading={this.props.isAuthenticating} style={{ width: '100%' }}>登录</Button>
+              </div>
+            </Form>
           </div>
         </div>
       </div>);
@@ -42,15 +80,17 @@ class Login extends React.Component {
 }
 function mapStateToProp(state) {
   return {
-    isLogin: state.userReducer.isLogin
+    authenticated: state.userReducer.authenticated,
+    isAuthenticating: state.userReducer.isAuthenticating
   };
 }
 function mapDispatchToProp(dispatch) {
   return {
     login: (data) => {
-      dispatch(login(data));
+      dispatch(loginRequest(data));
     }
   };
 }
 
-export default connect(mapStateToProp, mapDispatchToProp)(withRouter(Login));
+const WrappedLogin = Form.create()(Login);
+export default connect(mapStateToProp, mapDispatchToProp)(withRouter(WrappedLogin));
