@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card } from 'antd';
+import { Card, Badge } from 'antd';
+import 'ASSETS/less/sender-item.less'
 
 const SenderItem = ({ props, editSenderDlg }) => {
   const style = {
@@ -7,8 +8,11 @@ const SenderItem = ({ props, editSenderDlg }) => {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   };
-  return (<Card title={props.name} extra={<a href="javascript:;" onClick={editSenderDlg}>编辑</a>} style={{ width: 300, height: 210 }}>
-    <p style={style}>所在地：{props.region}</p>
+  const title= <Badge count={props.default ? '默认' : ''}>
+      <span style={{ fontSize: 18 }}> {props.name} </span>
+    </Badge>;
+  return (<Card className="senderItem" title={title} extra={<a href="javascript:;" onClick={editSenderDlg}>编辑</a>} style={{ width: 300, height: 210 }}>
+    <p style={style}>所在地：{props.region.province}{props.region.city}{props.region.county}</p>
     <p style={style}>街道地址：{props.address}</p>
     <p style={style}>单位：{props.company}</p>
     <p style={style}>邮编：{props.postCode}</p>

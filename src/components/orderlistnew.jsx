@@ -8,11 +8,15 @@ const Option = Select.Option;
 const columns = [{
   title: '编号',
   key: 'id',
-  dataIndex: 'id'
+  dataIndex: 'id',
+  width: 50,
+  fixed: 'left'
 }, {
   title: '宝贝名称',
   key: 'goodsName',
-  dataIndex: 'goodsName'
+  dataIndex: 'goodsName',
+  width: 200,
+  fixed: 'left'
 }, {
   title: '订单编号',
   key: 'orderID',
@@ -36,11 +40,15 @@ const columns = [{
 }, {
   title: '快递单打印状态',
   key: 'printed',
-  dataIndex: 'printed'
+  dataIndex: 'printed',
+  width: 100,
+  fixed: 'right'
 }, {
   title: '操作',
   key: 'opt',
   dataIndex: 'opt',
+  width: 80,
+  fixed: 'right',
   render: (text, record) => (<a href="javascript:;" onClick={()=>{
       message.info('亲，稍安勿躁，该功能还在开发中...');
     }}>
@@ -106,6 +114,7 @@ class OrderListNew extends React.Component {
         pagination={this.state.pagination}
         loading={this.state.loading}
         onChange={this.handleTableChange.bind(this)}
+        scroll={{ x: 1500 }}
       />
     </div>;
   }

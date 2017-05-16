@@ -12,11 +12,32 @@ class SenderSetting extends React.Component {
       showModal: false,
       datas: [],
       modalData: {
-        visible: true,
         title: '新增联系人',
+        name: '',
+        address: '',
+        region: [],
+        company: '',
+        postCode: '',
+        phone: '',
+        tel: '',
+        confirmLoading: false,
         handleOk: () => {
+          this.setState({
+              ...this.state,
+               modalData: {
+              ...this.state.modalData,
+              confirmLoading: true
+              }
+          });
           API.addSenderResource().then((res) => {
             message.success('增加联系人成功！');
+            this.setState({
+              ...this.state,
+               modalData: {
+              ...this.state.modalData,
+              confirmLoading: false
+              }
+            });
             this.hideDialog();
             this.getData();
           });
@@ -31,16 +52,11 @@ class SenderSetting extends React.Component {
   hideDialog() {
     this.setState({
       ...this.state,
-      modalData: {
-        ...this.state.modalData,
-        visible: false
-      },
       showModal: false
     });
   }
   getData() {
     API.getSendersResource().then((res) => {
-      
       this.setState({
         datas: res.data.data.list
       });
@@ -54,13 +70,23 @@ class SenderSetting extends React.Component {
       ...this.state,
       modalData: {
         ...this.state.modalData,
-        visible: true
+        title: '新增联系人',
+        name: '',
+        address: '',
+        region: [],
+        company: '',
+        postCode: '',
+        phone: '',
+        tel: ''
       },
       showModal: true
     });
   }
   editSenderDlg(item) {
-    console.log(item);
+    let newRegion = [];
+    if(item.region.province){
+      newRegion=new Array([item.region.province,item.region.city,item.region.county]);
+    }
     this.setState({
       ...this.state,
       modalData: {
@@ -69,7 +95,7 @@ class SenderSetting extends React.Component {
         title: '编辑联系人',
         name: item.name,
         address: item.address,
-        region: item.region,
+        region: newRegion,
         company: item.company,
         postCode: item.postCode,
         phone: item.phone,
