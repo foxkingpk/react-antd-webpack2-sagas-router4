@@ -12,7 +12,7 @@ import Logo from 'ASSETS/imgs/logo.svg';
 import OrderListNew from './orderlistnew.jsx';
 import OrderListFinish from './orderlistfinish.jsx';
 import PrintMachineManager from './printmachinemanager.jsx';
-import PrintTemplate from './printtemplate.jsx';
+import SenderSetting from './sender-setting.jsx';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -146,8 +146,8 @@ class App extends React.Component {
                 </Menu.Item>
               </SubMenu>
               <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
-                <Menu.Item key="printTemplate">
-                  <Link to="/printTemplate">寄件人设置</Link>
+                <Menu.Item key="senderSetting">
+                  <Link to="/senderSetting">寄件人设置</Link>
                 </Menu.Item>
                 <Menu.Item key="printMachineManager">
                   <Link to="/printMachineManager">打印机管理</Link>
@@ -155,17 +155,17 @@ class App extends React.Component {
               </SubMenu>
             </Menu>
           </Sider>
-          <Content>
-            <div style={{ background: '#fff', height: 'calc(100vh - 142px)', color: 'green' }}>
+          <Content style={{ padding: '24px' }}>
+            <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
               <Route exact path="/" component={OrderListNew} />
               <Route path="/orderListNew" component={OrderListNew} />
               <Route path="/orderListFinish" component={OrderListFinish} />
-              <Route path="/printTemplate" component={PrintTemplate} />
+              <Route path="/senderSetting" component={SenderSetting} />
               <Route path="/printMachineManager" component={PrintMachineManager} />
-              <div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
+              {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
-              </div>
+              </div>*/}
             </div>
             <div style={{ padding: '0 20' }}>
               <Modal
@@ -195,7 +195,7 @@ class App extends React.Component {
             </div>
           </Content>
         </Layout>
-        <Footer style={{ textAlign: 'center', fontSize: 20 }}>
+        <Footer style={{ textAlign: 'center', fontSize: 20, background: '#fff' }}>
           XXX订单管理系统 版权所有 © 2017 由 XXX科技有限责任公司 支持
         </Footer>
       </Layout>

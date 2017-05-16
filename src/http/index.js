@@ -44,10 +44,14 @@ axios.interceptors.response.use(
 );
 
 const Get = (url, payload) => {
+  const obj = {
+    params: null
+  };
+  if (payload) {
+    obj.params = payload;
+  }
   return new Promise((resolve, reject) => {
-    axios.get(url, {
-      params: payload
-    }).then((response) => {
+    axios.get(url, obj).then((response) => {
       resolve({
         status: response.status,
         data: response.data

@@ -22,9 +22,9 @@ export const init = (store) => {
     } else if (location.pathname.match(/\/printMachineManager$/g)) {
       store.dispatch(setOpenKeys(['print']));
       store.dispatch(setCurrentItem('printMachineManager'));
-    } else if (location.pathname.match(/\/printTemplate$/g)) {
+    } else if (location.pathname.match(/\/senderSetting$/g)) {
       store.dispatch(setOpenKeys(['print']));
-      store.dispatch(setCurrentItem('printTemplate'));
+      store.dispatch(setCurrentItem('senderSetting'));
     }
   }
 };
