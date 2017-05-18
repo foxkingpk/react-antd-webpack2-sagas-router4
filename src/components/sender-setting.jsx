@@ -10,6 +10,7 @@ class SenderSetting extends React.Component {
     super();
     this.state = {
       showModal: false,
+      isNewDlg: false,
       datas: [],
       modalData: {
         title: '新增联系人',
@@ -20,22 +21,24 @@ class SenderSetting extends React.Component {
         postCode: '',
         phone: '',
         tel: '',
+        default: false,
         confirmLoading: false,
-        handleOk: () => {
+        handleOk: (payload) => {
           this.setState({
-              ...this.state,
-               modalData: {
+            ...this.state,
+            modalData: {
               ...this.state.modalData,
               confirmLoading: true
-              }
+            }
           });
-          API.addSenderResource().then((res) => {
-            message.success('增加联系人成功！');
+
+          API.addSenderResource(payload).then((res) => {
+            message.success(this.state.isNewDlg ? '新增联系人成功！' : '修改联系人成功！');
             this.setState({
               ...this.state,
-               modalData: {
-              ...this.state.modalData,
-              confirmLoading: false
+              modalData: {
+                ...this.state.modalData,
+                confirmLoading: false
               }
             });
             this.hideDialog();
@@ -48,12 +51,8 @@ class SenderSetting extends React.Component {
       }
     };
   }
-
-  hideDialog() {
-    this.setState({
-      ...this.state,
-      showModal: false
-    });
+  componentDidMount() {
+    this.getData();
   }
   getData() {
     API.getSendersResource().then((res) => {
@@ -62,8 +61,11 @@ class SenderSetting extends React.Component {
       });
     });
   }
-  componentDidMount() {
-    this.getData();
+  hideDialog() {
+    this.setState({
+      ...this.state,
+      showModal: false
+    });
   }
   newSenderDlg() {
     this.setState({
@@ -77,16 +79,14 @@ class SenderSetting extends React.Component {
         company: '',
         postCode: '',
         phone: '',
-        tel: ''
+        tel: '',
+        default: false
       },
-      showModal: true
+      showModal: true,
+      isNewDlg: true
     });
   }
   editSenderDlg(item) {
-    let newRegion = [];
-    if(item.region.province){
-      newRegion=new Array([item.region.province,item.region.city,item.region.county]);
-    }
     this.setState({
       ...this.state,
       modalData: {
@@ -95,13 +95,15 @@ class SenderSetting extends React.Component {
         title: '编辑联系人',
         name: item.name,
         address: item.address,
-        region: newRegion,
+        region: item.region,
         company: item.company,
         postCode: item.postCode,
         phone: item.phone,
-        tel: item.tel
+        tel: item.tel,
+        default: item.default
       },
-      showModal: true
+      showModal: true,
+      isNewDlg: false
     });
   }
   render() {
@@ -111,19 +113,16 @@ class SenderSetting extends React.Component {
       </li>
     );
 
-    return <div>
-        <ul className="clearfix">
-         {listItems}
-         
-         <li style={{ float: 'left', margin: '10px' }} key="senderNew">
-           <SenderNew newSenderDlg={this.newSenderDlg.bind(this)} />
-         </li>
-        </ul>
+    return (<div>
+      <ul className="clearfix">
+        {listItems}
+        <li style={{ float: 'left', margin: '10px' }} key="senderNew">
+          <SenderNew newSenderDlg={this.newSenderDlg.bind(this)} />
+        </li>
+      </ul>
       { this.state.showModal ? <SenderEdit data={this.state.modalData} /> : '' }
-      </div>;
+    </div>);
   }
-
-  
 }
 
 export default SenderSetting;

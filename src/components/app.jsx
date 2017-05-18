@@ -11,7 +11,7 @@ import Logo from 'ASSETS/imgs/logo.svg';
 
 import OrderListNew from './orderlistnew.jsx';
 import OrderListFinish from './orderlistfinish.jsx';
-import PrintMachineManager from './printmachinemanager.jsx';
+import PrinterManager from './printer-manager.jsx';
 import SenderSetting from './sender-setting.jsx';
 
 const { Header, Sider, Footer, Content } = Layout;
@@ -29,8 +29,7 @@ class App extends React.Component {
       current: '',
       openKeys: [''],
       passwdDlg: false,
-      collapsed: false,
-      mode: 'inline',
+      mode: 'inline'
     };
   }
   componentDidMount() {
@@ -50,6 +49,13 @@ class App extends React.Component {
     }
 
     this.props.setOpenKeys(nextOpenKeys);
+  }
+  onCollapse(collapsed) {
+    console.log(collapsed);
+    this.setState({
+      collapsed,
+      mode: collapsed ? 'vertical' : 'inline',
+    });
   }
   getAncestorKeys(key) {
     const map = {
@@ -71,10 +77,9 @@ class App extends React.Component {
   }
   handleOk() {
     this.setState({ loading: true });
-    // setTimeout(() => {
-    //   this.setState({ loading: false, passwdDlg: false });
-    // }, 3000);
-    this.request(1);
+    setTimeout(() => {
+      this.setState({ loading: false, passwdDlg: false });
+    }, 3000);
   }
   handleCancel() {
     this.setState({ passwdDlg: false });
@@ -99,13 +104,6 @@ class App extends React.Component {
   }
   send() {
     this.props.sendData();
-  }
-  onCollapse(collapsed) {
-    console.log(collapsed);
-    this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical' : 'inline',
-    });
   }
   render() {
     if (!this.props.authenticated) {
@@ -135,7 +133,7 @@ class App extends React.Component {
           </Row>
         </Header>
         <Layout>
-          <Sider className="sider" style={{ backgroundColor: 'white' }}  collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
+          <Sider className="sider" style={{ backgroundColor: 'white' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
             <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
               <SubMenu key="ordersCenter" title={<span><Icon type="solution" /><span className="nav-text">订单中心</span></span>}>
                 <Menu.Item key="orderListNew">
@@ -149,8 +147,8 @@ class App extends React.Component {
                 <Menu.Item key="senderSetting">
                   <Link to="/senderSetting">寄件人设置</Link>
                 </Menu.Item>
-                <Menu.Item key="printMachineManager">
-                  <Link to="/printMachineManager">打印机管理</Link>
+                <Menu.Item key="printerManager">
+                  <Link to="/printerManager">打印机管理</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>
@@ -161,7 +159,7 @@ class App extends React.Component {
               <Route path="/orderListNew" component={OrderListNew} />
               <Route path="/orderListFinish" component={OrderListFinish} />
               <Route path="/senderSetting" component={SenderSetting} />
-              <Route path="/printMachineManager" component={PrintMachineManager} />
+              <Route path="/printerManager" component={PrinterManager} />
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
@@ -171,7 +169,7 @@ class App extends React.Component {
               <Modal
                 visible={this.state.passwdDlg}
                 title="修改密码"
-                style={{ top: '50%', transform: 'translateY(-50%)' }}
+                style={{ top: '50%', marginTop: '-139px' }}
                 onOk={this.handleOk.bind(this)}
                 onCancel={this.handleCancel.bind(this)}
                 footer={[

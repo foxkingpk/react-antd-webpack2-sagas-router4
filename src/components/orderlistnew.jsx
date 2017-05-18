@@ -1,7 +1,8 @@
 import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select, message } from 'antd';
+import { Table, Icon, Row, Col, Input, Select, message, notification } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
+import mLODOP from 'UTILS/print.js';
 
 const Search = Input.Search;
 const Option = Select.Option;
@@ -49,9 +50,43 @@ const columns = [{
   dataIndex: 'opt',
   width: 80,
   fixed: 'right',
-  render: (text, record) => (<a href="javascript:;" onClick={()=>{
-      message.info('亲，稍安勿躁，该功能还在开发中...');
-    }}>
+  render: (text, record) => (<a href="javascript:;" onClick={() => {
+    if (!mLODOP.getMLodop()) {
+      notification.error({
+        message: '错误提示',
+        description: '你还没安装打印插件，或者没有运行打印程序。请到打印机管理页面进行下载、安装、测试！',
+        duration: 5
+      });
+    } else {
+      const tempLodop = mLODOP.getMLodop();
+      
+      Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getExpressTemplateResource()]).then((values) => {
+        console.log(values);
+        const defaultPrinter = values[0].data.data.printer;
+        const printData = values[1].data.data;
+        const tempdata = values[2].data.data;
+        mLODOP.printPurge(defaultPrinter);
+        mLODOP.printResume(defaultPrinter);
+        const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
+        eval(rTemplate);
+        if (!mLODOP.checkPrinter(defaultPrinter)) {
+          notification.error({
+            message: '错误提示',
+            description: '当前设置的默认打印机没有找到，请前往"打印设置"页面，重新设置默认打印机！'
+          });
+          return;
+        }
+        tempLodop.SET_SHOW_MODE('HIDE_PAPER_BOARD', true);
+        tempLodop.SET_PREVIEW_WINDOW(2, 1, 1, 700, 440, '快递单打印');
+        tempLodop.SET_SHOW_MODE('PREVIEW_IN_BROWSE', true);
+        tempLodop.SET_PRINTER_INDEX(defaultPrinter);
+        tempLodop.SET_PRINT_MODE('AUTO_CLOSE_PREWINDOW', 1);
+        mLODOP.preview();
+      }).catch((reason) => {
+        console.log(reason);
+      });
+    }
+  }}>
     打印<Icon type="printer" style={{ marginLeft: 5 }} />
   </a>)
 }];

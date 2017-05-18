@@ -10,7 +10,9 @@ const apiWX = {
   Senders: '/api/senders',
   AddSender: '/api/addSender',
   ChangeDefaultPrinter: '/api/changeDefaultPrinter',
-  GetDefaultPrinter: '/api/getDefaultPrinter'
+  GetDefaultPrinter: '/api/getDefaultPrinter',
+  GetOrderPrintData: '/api/getOrderPrintData',
+  GetExpressTemplate: '/api/getExpressTemplate'
 };
 
 const LoginResource = API_ROOT.concat(apiWX.Login);
@@ -22,6 +24,9 @@ const SendersResource = API_ROOT.concat(apiWX.Senders);
 const AddSenderResource = API_ROOT.concat(apiWX.AddSender);
 const ChangeDefaultPrinterResource = API_ROOT.concat(apiWX.ChangeDefaultPrinter);
 const GetDefaultPrinterResource = API_ROOT.concat(apiWX.GetDefaultPrinter);
+const GetOrderPrintDataResource = API_ROOT.concat(apiWX.GetOrderPrintData);
+const GetExpressTemplateResource = API_ROOT.concat(apiWX.GetExpressTemplate);
+
 export {
   LoginResource,
   LogoutResource,
@@ -31,5 +36,7 @@ export {
   SendersResource,
   AddSenderResource,
   ChangeDefaultPrinterResource,
-  GetDefaultPrinterResource
+  GetDefaultPrinterResource,
+  GetOrderPrintDataResource,
+  GetExpressTemplateResource
 };

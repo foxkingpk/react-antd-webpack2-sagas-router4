@@ -19,9 +19,9 @@ export const init = (store) => {
     } else if (location.pathname.match(/\/orderListFinish$/g)) {
       store.dispatch(setOpenKeys(['ordersCenter']));
       store.dispatch(setCurrentItem('orderListFinish'));
-    } else if (location.pathname.match(/\/printMachineManager$/g)) {
+    } else if (location.pathname.match(/\/printerManager$/g)) {
       store.dispatch(setOpenKeys(['print']));
-      store.dispatch(setCurrentItem('printMachineManager'));
+      store.dispatch(setCurrentItem('printerManager'));
     } else if (location.pathname.match(/\/senderSetting$/g)) {
       store.dispatch(setOpenKeys(['print']));
       store.dispatch(setCurrentItem('senderSetting'));
