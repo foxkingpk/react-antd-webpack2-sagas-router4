@@ -7,7 +7,7 @@ import Login from 'COMPONENT/login.jsx';
 import store from 'REDUX/store/';
 import { init } from 'UTILS/init.js';
 
-init(store);
+init(store); 
 
 ReactDOM.render(
   <Provider store={store}>
