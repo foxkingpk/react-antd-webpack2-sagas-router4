@@ -47,6 +47,15 @@ class SenderSetting extends React.Component {
         },
         handleCancel: () => {
           this.hideDialog();
+        },
+        onChange: (e) => {
+          this.setState({
+            ...this.state,
+            modalData: {
+              ...this.state.modalData,
+              default: e.target.checked
+            }
+          });
         }
       }
     };

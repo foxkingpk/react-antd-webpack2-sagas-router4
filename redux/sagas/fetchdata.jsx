@@ -1,8 +1,9 @@
 import {
   put,
-  call
+  call,
+  takeEvery
 } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
+
 import API from 'API';
 import 'babel-polyfill';
 import { REQUEST_DATA } from 'REDUX/actions/actionstype';
@@ -19,6 +20,6 @@ function* fetchDataRequest() {
 }
 
 export function* fetchData() {
-  yield* takeEvery(REQUEST_DATA, fetchDataRequest);
+  yield takeEvery(REQUEST_DATA, fetchDataRequest);
 }
 

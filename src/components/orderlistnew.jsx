@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select, message, notification, Modal } from 'antd';
+import { Table, Icon, Row, Col, Input, Select, notification, Modal } from 'antd';
+import DropOption from 'COMPONENT/DropOption';
 import 'ASSETS/less/orderlistnew.less';
 import mLODOP from 'UTILS/print.js';
 
@@ -52,55 +53,57 @@ const columns = [{
   dataIndex: 'opt',
   width: 100,
   fixed: 'right',
-  render: (text, record) => (<div><a href="javascript:;" onClick={() => {
-    if (!mLODOP.getMLodop()) {
-      notification.error({
-        message: '错误提示',
-        description: '你还没安装打印插件，或者没有运行打印程序。请到打印机管理页面进行下载、安装、测试！',
-        duration: 5
-      });
-    } else {
-      const tempLodop = mLODOP.getMLodop();
-      
-      Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getExpressTemplateResource()]).then((values) => {
-        console.log(values);
-        const defaultPrinter = values[0].data.data.printer;
-        const printData = values[1].data.data;
-        const tempdata = values[2].data.data;
-        mLODOP.printPurge(defaultPrinter);
-        mLODOP.printResume(defaultPrinter);
-        const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
-        eval(rTemplate);
-        if (!mLODOP.checkPrinter(defaultPrinter)) {
-          notification.error({
-            message: '错误提示',
-            description: '当前设置的默认打印机没有找到，请前往"打印设置"页面，重新设置默认打印机！'
-          });
-          return;
-        }
-	   
-        tempLodop.SET_PRINT_PAGESIZE(1, parseFloat(tempdata.width) * 10, parseFloat(tempdata.height) * 10, "");
-        tempLodop.SET_SHOW_MODE('HIDE_PAPER_BOARD', true);
-        tempLodop.SET_PREVIEW_WINDOW(2, 1, 1, 700, 440, '快递单打印');
-        tempLodop.SET_SHOW_MODE('PREVIEW_IN_BROWSE', true);
-        tempLodop.SET_PRINTER_INDEX(defaultPrinter);
-        tempLodop.SET_PRINT_MODE('AUTO_CLOSE_PREWINDOW', 1);
-        mLODOP.preview();
-      }).catch((reason) => {
-        console.log(reason);
-      });
-    }
-  }}>
-    <Icon type="printer" style={{ marginRight: 2 }} />打印
-  </a><a style={{ marginLeft: 5 }} href="javascript:;" onClick={(record, e) => {
+  render: (text, record) => (<DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={[{ key: '1', name: '订单打印' }, { key: '2', name: '订单退回' }]} />)
+}];
+const handleMenuClick = (record, e) => {
+  if (e.key === '1') {
+    startPrint(record);
+  } else if (e.key === '2') {
     confirm({
       title: '您确定将该订单退回?',
       onOk() {
         onBackOrderItem(record.id);
       }
     });
-  }}><Icon type="rollback" style={{ marginRight: 2 }} />退回</a></div>)
-}];
+  }
+};
+const startPrint = (record) => {
+  if (!mLODOP.getMLodop()) {
+    notification.error({
+      message: '错误提示',
+      description: '你还没安装打印插件，或者没有运行打印程序。请到打印机管理页面进行下载、安装、测试！',
+      duration: 5
+    });
+  } else {
+    const tempLodop = mLODOP.getMLodop();
+    Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getExpressTemplateResource()]).then((values) => {
+      console.log(values);
+      const defaultPrinter = values[0].data.data.printer;
+      const printData = values[1].data.data;
+      const tempdata = values[2].data.data;
+      mLODOP.printPurge(defaultPrinter);
+      mLODOP.printResume(defaultPrinter);
+      const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
+      eval(rTemplate);
+      if (!mLODOP.checkPrinter(defaultPrinter)) {
+        notification.error({
+          message: '错误提示',
+          description: '当前设置的默认打印机没有找到，请前往"打印设置"页面，重新设置默认打印机！'
+        });
+        return;
+      }
+      tempLodop.SET_PRINT_PAGESIZE(1, parseFloat(tempdata.width) * 10, parseFloat(tempdata.height) * 10, '');
+      tempLodop.SET_SHOW_MODE('HIDE_PAPER_BOARD', true);
+      tempLodop.SET_PREVIEW_WINDOW(2, 1, 1, 700, 440, '快递单打印');
+      tempLodop.SET_SHOW_MODE('PREVIEW_IN_BROWSE', true);
+      tempLodop.SET_PRINTER_INDEX(defaultPrinter);
+      tempLodop.SET_PRINT_MODE('AUTO_CLOSE_PREWINDOW', 1);
+      mLODOP.preview();
+    }).catch((reason) => {
+      console.log(reason);
+    });
+  }
+};
 const onBackOrderItem = (id) => {
   API.updateOrderVendorResource({ id }).then((res) => {
       console.log(res);

@@ -14,6 +14,9 @@ class PrinterManager extends React.Component {
         printer: res.data.data.printer
       });
     });
+    if (mLODOP.getMLodop()) {
+      LODOP.Create_Printer_List(document.getElementById('printerChoose'));
+    }
   }
   changeDefaultPrinter() {
     API.changeDefaultPrinter().then((res) => {

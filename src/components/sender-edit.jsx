@@ -125,7 +125,7 @@ class SenderEdit extends React.Component {
           })(<Input placeholder="请输入电话号码" />)}
         </FormItem>
         <FormItem {...formItemLayoutLast}>
-          <Checkbox checked={this.props.data.default}>设置为默认发货地址</Checkbox>
+          <Checkbox checked={this.props.data.default} onChange={this.props.data.onChange}>设置为默认发货地址</Checkbox>
         </FormItem>
       </Form>
     </Modal>);

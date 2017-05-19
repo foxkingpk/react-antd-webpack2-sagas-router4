@@ -1,8 +1,8 @@
 import {
   put,
-  call
+  call,
+  takeEvery
 } from 'redux-saga/effects';
-import { takeEvery } from 'redux-saga';
 import API from 'API';
 import 'babel-polyfill';
 import { LOGOUT_REQUEST } from 'REDUX/actions/actionstype';
@@ -23,5 +23,5 @@ function* logoutRequest() {
 }
 
 export function* signout() {
-  yield* takeEvery(LOGOUT_REQUEST, logoutRequest);
+  yield takeEvery(LOGOUT_REQUEST, logoutRequest);
 }
