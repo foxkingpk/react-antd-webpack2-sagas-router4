@@ -76,7 +76,7 @@ const columns = [{
           });
           return;
         }
-	   console.log("width:"+tempdata.width+",height:"+tempdata.height);
+	   
         tempLodop.SET_PRINT_PAGESIZE(1, parseFloat(tempdata.width) * 10, parseFloat(tempdata.height) * 10, "");
         tempLodop.SET_SHOW_MODE('HIDE_PAPER_BOARD', true);
         tempLodop.SET_PREVIEW_WINDOW(2, 1, 1, 700, 440, '快递单打印');
