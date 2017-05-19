@@ -7,7 +7,9 @@ const userReducer = (state = {
   isAuthenticating: false,
   customData: '',
   token: '',
-  statusText: ''
+  statusText: '',
+  isAdmin: false,
+  userName: ''
 }, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
@@ -20,16 +22,20 @@ const userReducer = (state = {
         ...state,
         authenticated: true,
         isAuthenticating: false,
-        token: action.payload.token
+        token: action.payload.token,
+        isAdmin: action.payload.isAdmin,
+        userName: action.payload.userName
       };
     case LOGIN_FAILURE:
-       message.error(action.payload.msg);
+      message.error(action.payload.msg);
       return {
         ...state,
         authenticated: false,
         isAuthenticating: false,
         token: '',
-        statusText: action.payload.msg
+        statusText: action.payload.msg,
+        isAdmin: false,
+        userName: ''
       };
     case LOGOUT_REQUEST:
       return state;
@@ -39,7 +45,9 @@ const userReducer = (state = {
         authenticated: false,
         isAuthenticating: false,
         token: null,
-        statusText: ''
+        statusText: '',
+        isAdmin: false,
+        userName: ''
       };
     case RECIVE_DATA:
       return {

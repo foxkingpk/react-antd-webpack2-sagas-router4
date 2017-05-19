@@ -1,5 +1,5 @@
 import HTTP from 'HTTP';
-import { LoginResource, LogoutResource, OrderListNewResource, OrderListFinishResource, OrderStateResource, SendersResource, AddSenderResource, ChangeDefaultPrinterResource, GetDefaultPrinterResource, GetOrderPrintDataResource, GetExpressTemplateResource } from './resource.js';
+import { LoginResource, LogoutResource, OrderListNewResource, OrderListFinishResource, OrderStateResource, SendersResource, AddSenderResource, ChangeDefaultPrinterResource, GetDefaultPrinterResource, GetOrderPrintDataResource, GetExpressTemplateResource, UpdateOrderVendorResource, GetUnassignOrdersResource, GetAssignedOrdersResource, GetOrderVendorsResource, SaveUnassignOrderResource } from './resource.js';
 
 export default {
   getLoginResource(data) {
@@ -31,6 +31,21 @@ export default {
   },
   getExpressTemplateResource(payload) {
     return HTTP.Get(GetExpressTemplateResource, payload);
+  },
+  updateOrderVendorResource(payload) {
+    return HTTP.Get(UpdateOrderVendorResource, payload);
+  },
+  getUnassignOrdersResource(payload) {
+    return HTTP.Get(GetUnassignOrdersResource, payload);
+  },
+  getAssignedOrdersResource(payload) {
+    return HTTP.Get(GetAssignedOrdersResource, payload);
+  },
+  getOrderVendorsResource(payload) {
+    return HTTP.Get(GetOrderVendorsResource, payload);
+  },
+  saveUnassignOrderResource(payload) {
+    return HTTP.Get(SaveUnassignOrderResource, payload);
   },
   getOrderState() {
     return HTTP.Get(OrderStateResource);

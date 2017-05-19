@@ -12,7 +12,12 @@ const apiWX = {
   ChangeDefaultPrinter: '/api/changeDefaultPrinter',
   GetDefaultPrinter: '/api/getDefaultPrinter',
   GetOrderPrintData: '/api/getOrderPrintData',
-  GetExpressTemplate: '/api/getExpressTemplate'
+  GetExpressTemplate: '/api/getExpressTemplate',
+  UpdateOrderVendor: '/api/updateOrderVendor',
+  GetUnassignOrders: '/api/getUnassignOrders',
+  GetAssignedOrders: '/api/getAssignedOrders',
+  GetOrderVendors: '/api/getOrderVendors',
+  SaveUnassignOrder: '/api/saveUnassignOrder'
 };
 
 const LoginResource = API_ROOT.concat(apiWX.Login);
@@ -26,7 +31,11 @@ const ChangeDefaultPrinterResource = API_ROOT.concat(apiWX.ChangeDefaultPrinter)
 const GetDefaultPrinterResource = API_ROOT.concat(apiWX.GetDefaultPrinter);
 const GetOrderPrintDataResource = API_ROOT.concat(apiWX.GetOrderPrintData);
 const GetExpressTemplateResource = API_ROOT.concat(apiWX.GetExpressTemplate);
-
+const UpdateOrderVendorResource = API_ROOT.concat(apiWX.UpdateOrderVendor);
+const GetUnassignOrdersResource = API_ROOT.concat(apiWX.GetUnassignOrders);
+const GetAssignedOrdersResource = API_ROOT.concat(apiWX.GetAssignedOrders);
+const GetOrderVendorsResource = API_ROOT.concat(apiWX.GetOrderVendors);
+const SaveUnassignOrderResource = API_ROOT.concat(apiWX.SaveUnassignOrder);
 export {
   LoginResource,
   LogoutResource,
@@ -38,5 +47,10 @@ export {
   ChangeDefaultPrinterResource,
   GetDefaultPrinterResource,
   GetOrderPrintDataResource,
-  GetExpressTemplateResource
+  GetExpressTemplateResource,
+  UpdateOrderVendorResource,
+  GetUnassignOrdersResource,
+  GetAssignedOrdersResource,
+  GetOrderVendorsResource,
+  SaveUnassignOrderResource
 };

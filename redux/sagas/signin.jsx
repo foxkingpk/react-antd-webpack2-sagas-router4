@@ -9,7 +9,7 @@ import API from 'API';
 import 'babel-polyfill';
 import { LOGIN_REQUEST } from 'REDUX/actions/actionstype';
 import { loginSuccess, loginFailure } from 'REDUX/actions/user';
-
+import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
 
 function login(data) {
   return API.getLoginResource(data);
@@ -17,9 +17,21 @@ function login(data) {
 
 function* loginRequest(data) {
   const response = yield call(login, data);
-  console.log("loginRequest",response);
   if (response.data.code === 200) {
-    yield put(loginSuccess(response.data.payload.token));
+    let isAdmin = false;
+    console.log(data.username.toLowerCase());
+    if (data.username.toLowerCase() === 'admin') {
+      console.log("bingo")
+      isAdmin = true;
+    }
+    yield put(loginSuccess(response.data.payload.token, isAdmin, data.username));
+    if (isAdmin) {
+      yield put(setCurrentItem('orderUnassign'));
+      yield put(setOpenKeys(['ordersAssign']));
+    } else {
+      yield put(setCurrentItem('orderListNew'));
+      yield put(setOpenKeys(['ordersCenter']));
+    }
   } else {
     yield put(loginFailure({
       code: response.data.code,
@@ -30,8 +42,8 @@ function* loginRequest(data) {
 
 export function* signin() {
   while (true) {
-    const payload = yield take(LOGIN_REQUEST);
-    yield fork(loginRequest, payload.data);
+    const resData = yield take(LOGIN_REQUEST);
+    yield fork(loginRequest, resData.payload);
   }
 }
 

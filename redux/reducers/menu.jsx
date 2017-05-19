@@ -1,7 +1,7 @@
 import { DEFAULTITEM, OPENKEYS } from '../actions/actionstype.js';
 
 const menuReducer = (state = {
-  currentItem: 'orders',
+  currentItem: '',
   openKeys: ['']
 }, action) => {
   switch (action.type) {

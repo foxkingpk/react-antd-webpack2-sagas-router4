@@ -1,11 +1,13 @@
 ﻿import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select, message, notification } from 'antd';
+import { Table, Icon, Row, Col, Input, Select, message, notification, Modal } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
 import mLODOP from 'UTILS/print.js';
 
 const Search = Input.Search;
 const Option = Select.Option;
+const confirm = Modal.confirm;
+
 const columns = [{
   title: '编号',
   key: 'id',
@@ -48,9 +50,9 @@ const columns = [{
   title: '操作',
   key: 'opt',
   dataIndex: 'opt',
-  width: 80,
+  width: 100,
   fixed: 'right',
-  render: (text, record) => (<a href="javascript:;" onClick={() => {
+  render: (text, record) => (<div><a href="javascript:;" onClick={() => {
     if (!mLODOP.getMLodop()) {
       notification.error({
         message: '错误提示',
@@ -89,10 +91,21 @@ const columns = [{
       });
     }
   }}>
-    打印<Icon type="printer" style={{ marginLeft: 5 }} />
-  </a>)
+    <Icon type="printer" style={{ marginRight: 2 }} />打印
+  </a><a style={{ marginLeft: 5 }} href="javascript:;" onClick={(record, e) => {
+    confirm({
+      title: '您确定将该订单退回?',
+      onOk() {
+        onBackOrderItem(record.id);
+      }
+    });
+  }}><Icon type="rollback" style={{ marginRight: 2 }} />退回</a></div>)
 }];
-
+const onBackOrderItem = (id) => {
+  API.updateOrderVendorResource({ id }).then((res) => {
+      console.log(res);
+  });
+}
 class OrderListNew extends React.Component {
   constructor() {
     super();

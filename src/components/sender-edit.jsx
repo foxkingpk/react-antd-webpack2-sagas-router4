@@ -15,7 +15,7 @@ class SenderEdit extends React.Component {
       phone: '',
       tel: ''
     };
-  }
+  } 
   handleSubmit() {
     this.props.form.validateFields((err, values) => {
       if (!err) {

@@ -3,12 +3,16 @@ import { REQUEST_DATA, RECIVE_DATA, LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE,
 export const loginRequest = (data) => {
   return { type: LOGIN_REQUEST, payload: data };
 };
-export const loginSuccess = (token) => {
+export const loginSuccess = (token, isAdmin, userName) => {
   localStorage.setItem('token', token);
-  return { type: LOGIN_SUCCESS, payload: { token } };
+  localStorage.setItem('isAdmin', isAdmin);
+  localStorage.setItem('userName', userName);
+  return { type: LOGIN_SUCCESS, payload: { token, isAdmin, userName } };
 };
 export const loginFailure = (data) => {
   localStorage.removeItem('token');
+  localStorage.removeItem('isAdmin');
+  localStorage.removeItem('userName');
   return { type: LOGIN_FAILURE, payload: { status: data.status, msg: data.msg } };
 };
 export const logoutRequest = () => {
@@ -16,6 +20,8 @@ export const logoutRequest = () => {
 };
 export const logoutSuccess = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('isAdmin');
+  localStorage.removeItem('userName');
   return { type: LOGOUT_SUCCESS };
 };
 export const requestData = (data) => {

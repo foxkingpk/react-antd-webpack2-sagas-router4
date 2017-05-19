@@ -13,6 +13,8 @@ import OrderListNew from './orderlistnew.jsx';
 import OrderListFinish from './orderlistfinish.jsx';
 import PrinterManager from './printer-manager.jsx';
 import SenderSetting from './sender-setting.jsx';
+import OrderUnassign from './order-unassign.jsx';
+import OrderAssigned from './order-assigned.jsx';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -119,7 +121,7 @@ class App extends React.Component {
             <Col xs={0} lg={20}>
               <div className="user">
                 <Menu mode="horizontal" className="menu">
-                  <SubMenu className="item" key="" title={<span><Icon type="user" />Admin</span>}>
+                  <SubMenu className="item" key="" title={<span><Icon type="user" />{this.props.userName}</span>}>
                     <Menu.Item key="passwd">
                       <div onClick={this.modifyPasswd.bind(this)}>修改密码</div>
                     </Menu.Item>
@@ -135,7 +137,15 @@ class App extends React.Component {
         <Layout>
           <Sider className="sider" style={{ backgroundColor: 'white' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
             <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
-              <SubMenu key="ordersCenter" title={<span><Icon type="solution" /><span className="nav-text">订单中心</span></span>}>
+              { this.props.isAdmin ? <SubMenu key="ordersAssign" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
+                <Menu.Item key="orderUnassign">
+                  <Link to="/orderUnassign">未分配订单</Link>
+                </Menu.Item>
+                <Menu.Item key="orderAssigned">
+                  <Link to="/orderAssigned">已分配订单</Link>
+                </Menu.Item>
+              </SubMenu> : ''}
+              <SubMenu key="ordersCenter" title={<span><Icon type="solution" /><span className="nav-text">订单派送</span></span>}>
                 <Menu.Item key="orderListNew">
                   <Link to="/orderListNew">未发货订单</Link>
                 </Menu.Item>
@@ -155,11 +165,15 @@ class App extends React.Component {
           </Sider>
           <Content style={{ padding: '24px' }}>
             <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
-              <Route exact path="/" component={OrderListNew} />
+              <Route exact path="/" render={() => {
+                return this.props.isAdmin ? <OrderUnassign /> : <OrderListNew />;
+              }} />
               <Route path="/orderListNew" component={OrderListNew} />
               <Route path="/orderListFinish" component={OrderListFinish} />
               <Route path="/senderSetting" component={SenderSetting} />
               <Route path="/printerManager" component={PrinterManager} />
+              <Route path="/orderUnassign" component={OrderUnassign} />
+              <Route path="/orderAssigned" component={OrderAssigned} />
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
@@ -207,7 +221,9 @@ function mapStateToProp(state) {
     isAuthenticating: state.userReducer.isAuthenticating,
     customData: state.userReducer.customData,
     current: state.menuReducer.currentItem,
-    openKeys: state.menuReducer.openKeys
+    openKeys: state.menuReducer.openKeys,
+    isAdmin: state.userReducer.isAdmin,
+    userName: state.userReducer.userName
   };
 }
 

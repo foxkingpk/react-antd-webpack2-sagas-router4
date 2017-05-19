@@ -4,7 +4,7 @@ import { Table, Icon, Row, Col, Input, Select } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
 
 const Search = Input.Search;
-const Option = Select.Option;
+
 const columns = [{
   title: '编号',
   key: 'id',
@@ -30,23 +30,27 @@ const columns = [{
   key: 'phone',
   dataIndex: 'phone'
 }, {
-  title: '发货时间',
-  key: 'sendTime',
-  dataIndex: 'sendTime'
-}, {
   title: '街道地址',
   key: 'address',
   dataIndex: 'address'
 }, {
   title: '快递',
   key: 'express',
-  dataIndex: 'express',
+  dataIndex: 'express'
+}, {
+  title: '订单分配状态',
+  key: 'assign',
+  dataIndex: 'assign',
+  width: 100,
+  fixed: 'right'
+}, {
+  title: '发货商家',
+  key: 'vendor',
+  dataIndex: 'vendor',
   width: 100,
   fixed: 'right'
 }];
-
-
-class OrderListFinish extends React.Component {
+class OrderAssigned extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -64,7 +68,7 @@ class OrderListFinish extends React.Component {
       loading: true
     });
 
-    API.getOrderListFinishResource(payload).then((res) => {
+    API.getAssignedOrdersResource(payload).then((res) => {
       console.log(res);
       this.setState({
         data: res.data.data,
@@ -107,4 +111,4 @@ class OrderListFinish extends React.Component {
   }
 }
 
-export default OrderListFinish;
+export default OrderAssigned;
