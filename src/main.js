@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import App from 'COMPONENT/app';
-import Login from 'COMPONENT/login.jsx';
+import Login from 'COMPONENT/login';
 import store from 'REDUX/store/';
 import { init } from 'UTILS/init.js';
+import NoMatch from 'COMPONENT/nomatch';
 
-init(store); 
+init(store);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -22,6 +23,7 @@ ReactDOM.render(
             }
           }
           />
+          {/*<Route component={NoMatch} />*/}
         </Switch>
       </div>
     </BrowserRouter>

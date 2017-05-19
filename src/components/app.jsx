@@ -1,14 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import { Layout, Menu, Row, Col, Icon, Modal, Button, Input } from 'antd';
-import { Route, Link, withRouter, Redirect } from 'react-router-dom';
+import { Route, Link, withRouter, Redirect, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { requestData, logoutRequest } from 'REDUX/actions/user';
 import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
 import 'MOCKJS';
 import 'ASSETS/less/app.less';
 import Logo from 'ASSETS/imgs/logo.svg';
-
+import NoMatch from 'COMPONENT/nomatch';
 import OrderListNew from './orderlistnew.jsx';
 import OrderListFinish from './orderlistfinish.jsx';
 import PrinterManager from './printer-manager.jsx';
@@ -165,15 +165,19 @@ class App extends React.Component {
           </Sider>
           <Content style={{ padding: '24px' }}>
             <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
-              <Route exact path="/" render={() => {
-                return this.props.isAdmin ? <OrderUnassign /> : <OrderListNew />;
-              }} />
-              <Route path="/orderListNew" component={OrderListNew} />
-              <Route path="/orderListFinish" component={OrderListFinish} />
-              <Route path="/senderSetting" component={SenderSetting} />
-              <Route path="/printerManager" component={PrinterManager} />
-              <Route path="/orderUnassign" component={OrderUnassign} />
-              <Route path="/orderAssigned" component={OrderAssigned} />
+              <Switch>
+                <Route exact path="/" render={() => {
+                  return this.props.isAdmin ? <OrderUnassign /> : <OrderListNew />;
+                }} />
+              
+                <Route exact path="/orderListNew" component={OrderListNew} />
+                <Route exact path="/orderListFinish" component={OrderListFinish} />
+                <Route exact path="/senderSetting" component={SenderSetting} />
+                <Route exact path="/printerManager" component={PrinterManager} />
+                <Route exact path="/orderUnassign" component={OrderUnassign} />
+                <Route exact path="/orderAssigned" component={OrderAssigned} />
+                <Route component={NoMatch} />
+              </Switch>
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
