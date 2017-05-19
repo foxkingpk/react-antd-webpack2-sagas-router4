@@ -53,7 +53,6 @@ class App extends React.Component {
     this.props.setOpenKeys(nextOpenKeys);
   }
   onCollapse(collapsed) {
-    console.log(collapsed);
     this.setState({
       collapsed,
       mode: collapsed ? 'vertical' : 'inline',
@@ -175,8 +174,8 @@ class App extends React.Component {
                 <Route exact path="/senderSetting" component={SenderSetting} />
                 <Route exact path="/printerManager" component={PrinterManager} />
                 <Route exact path="/orderUnassign" component={OrderUnassign} />
-                <Route exact path="/orderAssigned" component={OrderAssigned} />
-                <Route component={NoMatch} />
+                <Route exact path="/orderAssigned" component={OrderAssigned} />         
+                <Redirect from='*' to='/404' />
               </Switch>
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>

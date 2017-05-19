@@ -17,13 +17,13 @@ ReactDOM.render(
       <div>
         <Switch>
           <Route path="/login" component={Login} />
+          <Route path='/404' component={NoMatch} />
           <Route
             path="/" render={(props) => {
               return store.getState().userReducer.authenticated ? <App /> : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />;
             }
           }
-          />
-          {/*<Route component={NoMatch} />*/}
+          />      
         </Switch>
       </div>
     </BrowserRouter>
