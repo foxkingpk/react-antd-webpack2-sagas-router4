@@ -1,20 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import { Layout, Menu, Row, Col, Icon, Modal, Button, Input } from 'antd';
-import { Route, Link, withRouter, Redirect, Switch } from 'react-router-dom';
+import { Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { requestData, logoutRequest } from 'REDUX/actions/user';
 import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
-import 'MOCKJS';
+// import 'MOCKJS';
 import 'ASSETS/less/app.less';
 import Logo from 'ASSETS/imgs/logo.svg';
-import NoMatch from 'COMPONENT/nomatch';
-import OrderListNew from './orderlistnew.jsx';
-import OrderListFinish from './orderlistfinish.jsx';
-import PrinterManager from './printer-manager.jsx';
-import SenderSetting from './sender-setting.jsx';
-import OrderUnassign from './order-unassign.jsx';
-import OrderAssigned from './order-assigned.jsx';
+import expressImg from 'ASSETS/imgs/express.svg';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -35,7 +29,17 @@ class App extends React.Component {
     };
   }
   componentDidMount() {
-
+    const location = this.props.location.pathname;
+    const arr = location.split('/');
+    if (arr[1] && arr[2]) {
+      this.props.setOpenKeys([arr[1]]);
+      this.props.setCurrentItem(arr[2]);
+    } else if (arr[1]) {
+      this.props.setCurrentItem(arr[1]);
+    } else {
+      this.props.setOpenKeys(['']);
+      this.props.setCurrentItem('');
+    }
   }
 
   onOpenChange(openKeys) {
@@ -136,47 +140,36 @@ class App extends React.Component {
         <Layout>
           <Sider className="sider" style={{ backgroundColor: 'white' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
             <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
-              { this.props.isAdmin ? <SubMenu key="ordersAssign" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
+             <Menu.Item key="dashboard"><Link to="/dashboard">首页</Link></Menu.Item>
+              { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
                 <Menu.Item key="orderUnassign">
-                  <Link to="/orderUnassign">未分配订单</Link>
+                  <Link to="/orders/orderUnassign">未分配订单</Link>
                 </Menu.Item>
                 <Menu.Item key="orderAssigned">
-                  <Link to="/orderAssigned">已分配订单</Link>
+                  <Link to="/orders/orderAssigned">已分配订单</Link>
                 </Menu.Item>
               </SubMenu> : ''}
-              <SubMenu key="ordersCenter" title={<span><Icon type="solution" /><span className="nav-text">订单派送</span></span>}>
+              <SubMenu key="express" title={<span><span><img src={expressImg} style={{ width: 16, height: 12 }} /></span><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
                 <Menu.Item key="orderListNew">
-                  <Link to="/orderListNew">未发货订单</Link>
+                  <Link to="/express/orderListNew">未发货订单</Link>
                 </Menu.Item>
                 <Menu.Item key="orderListFinish">
-                  <Link to="/orderListFinish">已发货订单</Link>
+                  <Link to="/express/orderListFinish">已发货订单</Link>
                 </Menu.Item>
               </SubMenu>
               <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
                 <Menu.Item key="senderSetting">
-                  <Link to="/senderSetting">寄件人设置</Link>
+                  <Link to="/print/senderSetting">寄件人设置</Link>
                 </Menu.Item>
                 <Menu.Item key="printerManager">
-                  <Link to="/printerManager">打印机管理</Link>
+                  <Link to="/print/printerManager">打印机管理</Link>
                 </Menu.Item>
               </SubMenu>
             </Menu>
           </Sider>
           <Content style={{ padding: '24px' }}>
             <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
-              <Switch>
-                <Route exact path="/" render={() => {
-                  return this.props.isAdmin ? <OrderUnassign /> : <OrderListNew />;
-                }} />
-              
-                <Route exact path="/orderListNew" component={OrderListNew} />
-                <Route exact path="/orderListFinish" component={OrderListFinish} />
-                <Route exact path="/senderSetting" component={SenderSetting} />
-                <Route exact path="/printerManager" component={PrinterManager} />
-                <Route exact path="/orderUnassign" component={OrderUnassign} />
-                <Route exact path="/orderAssigned" component={OrderAssigned} />         
-                <Redirect from='*' to='/404' />
-              </Switch>
+              {this.props.children}
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>

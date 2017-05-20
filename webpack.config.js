@@ -57,7 +57,8 @@ module.exports = function(env) {
     resolve: {
       extensions: ['.js', '.jsx'],
       alias: {
-        COMPONENT: path.resolve(__dirname, './src/components'),
+        COMPONENTS: path.resolve(__dirname, './src/components'),
+        CONTAINERS: path.resolve(__dirname, './src/containers'),
         API: path.resolve(__dirname, './src/api'),
         HTTP: path.resolve(__dirname, './src/http'),
         REDUX: path.resolve(__dirname, './redux'),

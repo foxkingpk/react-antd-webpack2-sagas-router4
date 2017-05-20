@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import API from 'API';
 import { Table, Icon, Row, Col, Input, Select, notification, Modal } from 'antd';
-import DropOption from 'COMPONENT/DropOption';
+import DropOption from 'COMPONENTS/DropOption';
 import 'ASSETS/less/orderlistnew.less';
 import mLODOP from 'UTILS/print.js';
 
