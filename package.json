@@ -33,6 +33,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
     "mockjs": "^1.0.1-beta3",
+    "nprogress": "^0.2.0",
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

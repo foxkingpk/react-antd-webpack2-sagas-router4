@@ -1,6 +1,8 @@
 import axios from 'axios';
 import store from 'REDUX/store/';
 import { loginFailure } from 'REDUX/actions/user';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 // http request 拦截器
 axios.interceptors.request.use(
@@ -8,6 +10,7 @@ axios.interceptors.request.use(
       // if (localStorage.TOKEN) {
       //   config.headers.Authorization = `token ${localStorage.TOKEN}`;
       // }
+      NProgress.start();
       return config;
     },
     (err) => {
@@ -18,6 +21,7 @@ axios.interceptors.request.use(
 //http response 拦截器
 axios.interceptors.response.use(
     (response) => {
+      NProgress.done();
       return response;
     },
     (error) => {

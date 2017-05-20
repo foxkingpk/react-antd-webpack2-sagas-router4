@@ -28,7 +28,11 @@ class App extends React.Component {
       mode: 'inline'
     };
   }
+  componentWillMount(){
+    console.log("componentWillMount")
+  }
   componentDidMount() {
+    console.log("componentDidMount")
     const location = this.props.location.pathname;
     const arr = location.split('/');
     if (arr[1] && arr[2]) {
@@ -116,12 +120,12 @@ class App extends React.Component {
     }
     return (<div style={{ height: '100vh' }}>
       <Layout>
-        <Header>
+        <Header style={{background: '#fff'}}>
           <Row>
-            <Col xs={24} lg={4}>
+            <Col xs={4} lg={4}>
               <img alt="logo" src={Logo} className="logo" />
             </Col>
-            <Col xs={0} lg={20}>
+            <Col xs={20} lg={20}>
               <div className="user">
                 <Menu mode="horizontal" className="menu">
                   <SubMenu className="item" key="" title={<span><Icon type="user" />{this.props.userName}</span>}>
@@ -138,8 +142,8 @@ class App extends React.Component {
           </Row>
         </Header>
         <Layout>
-          <Sider className="sider" style={{ backgroundColor: 'white' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
-            <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 142px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
+          <Sider className="sider" style={{ backgroundColor: 'white', borderTop: '1px solid #f8f8f8', borderBottom: '1px solid #f8f8f8' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
+            <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 144px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
              <Menu.Item key="dashboard"><Link to="/dashboard">首页</Link></Menu.Item>
               { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
                 <Menu.Item key="orderUnassign">
