@@ -28,9 +28,10 @@ class Dashboard extends React.Component {
           </div>
         </div>
         <div className="shortcut">
-          <Link to="/express/orderListNew" className="pan-btn light-blue-btn">未打印订单</Link>
-          <Link to="/orders/orderUnassign" className="pan-btn pink-btn">未分配订单</Link>
-          <Link to="/print/printerManager" className="pan-btn green-btn">打印机设置</Link>
+          <Link to="/orders/orderUnassign" className="btn pink-btn">未分配订单</Link>
+          <Link to="/express/orderListNew" className="btn light-blue-btn">未打印订单</Link>
+          <Link to="/print/printerManager" className="btn green-btn">打印机设置</Link>
+          <a href="http://www.baidu.com" target="_blank" className="btn yellow-btn">搜索看看</a>
         </div>
       </div>
     );

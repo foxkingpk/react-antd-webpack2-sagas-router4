@@ -1,14 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { Layout, Menu, Row, Col, Icon, Modal, Button, Input } from 'antd';
+import { Layout, Menu, Icon, Modal, Button, Input } from 'antd';
 import { Link, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { requestData, logoutRequest } from 'REDUX/actions/user';
-import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
+import { setCurrentItem, setOpenKeys, setMenuFold } from 'REDUX/actions/menu';
 // import 'MOCKJS';
 import 'ASSETS/less/app.less';
 import Logo from 'ASSETS/imgs/logo.svg';
-import expressImg from 'ASSETS/imgs/express.svg';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -18,32 +17,11 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      collapsed: false,
       pagination: { total: 20 },
       data: [],
       loading: false,
-      current: '',
-      openKeys: [''],
-      passwdDlg: false,
-      mode: 'inline'
+      passwdDlg: false
     };
-  }
-  componentWillMount(){
-    console.log("componentWillMount")
-  }
-  componentDidMount() {
-    console.log("componentDidMount")
-    const location = this.props.location.pathname;
-    const arr = location.split('/');
-    if (arr[1] && arr[2]) {
-      this.props.setOpenKeys([arr[1]]);
-      this.props.setCurrentItem(arr[2]);
-    } else if (arr[1]) {
-      this.props.setCurrentItem(arr[1]);
-    } else {
-      this.props.setOpenKeys(['']);
-      this.props.setCurrentItem('');
-    }
   }
 
   onOpenChange(openKeys) {
@@ -61,10 +39,7 @@ class App extends React.Component {
     this.props.setOpenKeys(nextOpenKeys);
   }
   onCollapse(collapsed) {
-    this.setState({
-      collapsed,
-      mode: collapsed ? 'vertical' : 'inline',
-    });
+    this.props.setMenuFold(collapsed);
   }
   getAncestorKeys(key) {
     const map = {
@@ -77,9 +52,7 @@ class App extends React.Component {
     this.props.setCurrentItem(e.key);
   }
   toggle() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
+    this.props.setMenuFold(!this.props.menuFold);
   }
   logout() {
     this.props.logout();
@@ -118,60 +91,78 @@ class App extends React.Component {
     if (!this.props.authenticated) {
       return (<Redirect to="/login" />);
     }
+    const menuProps = !this.props.menuFold ? {
+      onOpenChange: this.onOpenChange.bind(this),
+      openKeys: this.props.openKeys
+    } : {};
+    const location = this.props.location.pathname;
+    const arr = location.split('/');
+    let defaultSelectedKeys = null;
+    if (arr[1] && arr[2]) {
+      defaultSelectedKeys = [arr[2]];
+    } else if (arr[1]) {
+      defaultSelectedKeys = [arr[1]];
+    } else {
+      defaultSelectedKeys = [''];
+    }
+
     return (<div style={{ height: '100vh' }}>
       <Layout>
-        <Header style={{background: '#fff'}}>
-          <Row>
-            <Col xs={4} lg={4}>
-              <img alt="logo" src={Logo} className="logo" />
-            </Col>
-            <Col xs={20} lg={20}>
-              <div className="user">
-                <Menu mode="horizontal" className="menu">
-                  <SubMenu className="item" key="" title={<span><Icon type="user" />{this.props.userName}</span>}>
-                    <Menu.Item key="passwd">
-                      <div onClick={this.modifyPasswd.bind(this)}>修改密码</div>
-                    </Menu.Item>
-                    <Menu.Item key="logout">
-                      <div onClick={this.logout.bind(this)}>退出</div>
-                    </Menu.Item>
-                  </SubMenu>
-                </Menu>
-              </div>
-            </Col>
-          </Row>
-        </Header>
-        <Layout>
-          <Sider className="sider" style={{ backgroundColor: 'white', borderTop: '1px solid #f8f8f8', borderBottom: '1px solid #f8f8f8' }} collapsed={this.state.collapsed} onCollapse={this.onCollapse.bind(this)}>
-            <Menu mode={this.state.mode} style={{ height: 'calc(100vh - 144px)' }} openKeys={this.props.openKeys} onClick={this.menuClick.bind(this)} onOpenChange={this.onOpenChange.bind(this)} selectedKeys={[this.props.current]} >
-             <Menu.Item key="dashboard"><Link to="/dashboard">首页</Link></Menu.Item>
-              { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
-                <Menu.Item key="orderUnassign">
-                  <Link to="/orders/orderUnassign">未分配订单</Link>
-                </Menu.Item>
-                <Menu.Item key="orderAssigned">
-                  <Link to="/orders/orderAssigned">已分配订单</Link>
-                </Menu.Item>
-              </SubMenu> : ''}
-              <SubMenu key="express" title={<span><span><img src={expressImg} style={{ width: 16, height: 12 }} /></span><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
-                <Menu.Item key="orderListNew">
-                  <Link to="/express/orderListNew">未发货订单</Link>
-                </Menu.Item>
-                <Menu.Item key="orderListFinish">
-                  <Link to="/express/orderListFinish">已发货订单</Link>
-                </Menu.Item>
-              </SubMenu>
-              <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
-                <Menu.Item key="senderSetting">
-                  <Link to="/print/senderSetting">寄件人设置</Link>
-                </Menu.Item>
-                <Menu.Item key="printerManager">
-                  <Link to="/print/printerManager">打印机管理</Link>
-                </Menu.Item>
-              </SubMenu>
-            </Menu>
-          </Sider>
-          <Content style={{ padding: '24px' }}>
+        <Sider className="sider" style={{ backgroundColor: 'white', height: '100vh' }} collapsed={this.props.menuFold} onCollapse={this.onCollapse.bind(this)}>
+          <div style={{ height: 64, textAlign: 'center', lineHeight: '64px', borderRight: '1px solid #e9e9e9' }}>
+            <img alt="logo" src={Logo} className="logo" />
+          </div>
+          <Menu {...menuProps} mode={this.props.menuFold ? 'vertical' : 'inline'} defaultSelectedKeys={defaultSelectedKeys} onClick={this.menuClick.bind(this)}>
+            <Menu.Item key="dashboard"><Link to="/dashboard"><Icon type="home" /><span className="nav-text">首页</span></Link></Menu.Item>
+            { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
+              <Menu.Item key="orderUnassign">
+                <Link to="/orders/orderUnassign">未分配订单</Link>
+              </Menu.Item>
+              <Menu.Item key="orderAssigned">
+                <Link to="/orders/orderAssigned">已分配订单</Link>
+              </Menu.Item>
+            </SubMenu> : ''}
+            <SubMenu key="express" title={<span><Icon type="schedule" /><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
+              <Menu.Item key="orderListNew">
+                <Link to="/express/orderListNew">未发货订单</Link>
+              </Menu.Item>
+              <Menu.Item key="orderListFinish">
+                <Link to="/express/orderListFinish">已发货订单</Link>
+              </Menu.Item>
+            </SubMenu>
+            <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
+              <Menu.Item key="senderSetting">
+                <Link to="/print/senderSetting">寄件人设置</Link>
+              </Menu.Item>
+              <Menu.Item key="printerManager">
+                <Link to="/print/printerManager">打印机管理</Link>
+              </Menu.Item>
+            </SubMenu>
+          </Menu>
+        </Sider>
+        <Layout style={{ overflow: 'auto', height: '100vh' }}>
+          <Header style={{ background: '#fff', padding: 0 }}>
+            <div className="menuFold">
+              <Icon
+                className="trigger"
+                type={this.props.menuFold ? 'menu-unfold' : 'menu-fold'}
+                onClick={this.toggle.bind(this)}
+              />
+            </div>
+            <div className="user">
+              <Menu mode="horizontal" className="menu">
+                <SubMenu className="item" key="" title={<span><Icon type="user" />{this.props.userName}</span>}>
+                  <Menu.Item key="passwd">
+                    <div onClick={this.modifyPasswd.bind(this)}>修改密码</div>
+                  </Menu.Item>
+                  <Menu.Item key="logout">
+                    <div onClick={this.logout.bind(this)}>退出</div>
+                  </Menu.Item>
+                </SubMenu>
+              </Menu>
+            </div>
+          </Header>
+          <Content style={{ padding: '24px', overflow: 'initial' }}>
             <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
               {this.props.children}
               {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
@@ -206,10 +197,10 @@ class App extends React.Component {
               </Modal>
             </div>
           </Content>
-        </Layout>
-        <Footer style={{ textAlign: 'center', fontSize: 20, background: '#fff' }}>
+          <Footer style={{ textAlign: 'center', fontSize: 20, background: '#fff' }}>
           XXX订单管理系统 版权所有 © 2017 由 XXX科技有限责任公司 支持
-        </Footer>
+          </Footer>
+        </Layout>
       </Layout>
     </div>);
   }
@@ -222,6 +213,7 @@ function mapStateToProp(state) {
     customData: state.userReducer.customData,
     current: state.menuReducer.currentItem,
     openKeys: state.menuReducer.openKeys,
+    menuFold: state.menuReducer.menuFold,
     isAdmin: state.userReducer.isAdmin,
     userName: state.userReducer.userName
   };
@@ -237,6 +229,9 @@ function mapDispatchToProp(dispatch) {
     },
     setOpenKeys: (data) => {
       dispatch(setOpenKeys(data));
+    },
+    setMenuFold: (data) => {
+      dispatch(setMenuFold(data));
     },
     setCurrentItem: (data) => {
       dispatch(setCurrentItem(data));

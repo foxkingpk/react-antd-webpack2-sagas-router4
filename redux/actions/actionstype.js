@@ -11,3 +11,4 @@ export const RECIVE_DATA = 'RECIVE_DATA';
 //设置menu菜单选中
 export const DEFAULTITEM = 'DEFAULTITEM';
 export const OPENKEYS = 'OPENKEYS';
+export const MENUFOLD = 'MENUFOLD';

@@ -1,4 +1,4 @@
-import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
+import { setMenuFold } from 'REDUX/actions/menu';
 import { loginSuccess } from 'REDUX/actions/user';
 
 export const init = (store) => {
@@ -9,14 +9,7 @@ export const init = (store) => {
   if (token) {
     store.dispatch(loginSuccess(token, isAdmin, localStorage.userName));
   }
-  //根据当前的url路径，设置对应的sidebar高亮
-  const location = window.location.pathname;
-  const arr = location.split('/');
-  if (arr[1] && arr[2]) {
-    store.dispatch(setOpenKeys([arr[1]]));
-    store.dispatch(setCurrentItem(arr[2]));
-  } else if (arr[1]) {
-    // store.dispatch(setOpenKeys(['']));
-    store.dispatch(setCurrentItem(arr[1]));
+  if (localStorage.menuFold) {
+    store.dispatch(setMenuFold(localStorage.menuFold === 'true' ? true : false));
   }
 };

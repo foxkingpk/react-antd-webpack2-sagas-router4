@@ -40,6 +40,7 @@ module.exports = {
     "import/no-unresolved": [0],
     "require-yield": [1],
     "comma-dangle": [2, "never"],//对象字面量项尾不能有逗号
-    "no-console": [0]
+    "no-console": [0],
+    "max-len":[0]
     }
 };
