@@ -2,7 +2,8 @@
 学习使用react、antd、webpack2、react-routerV4、redux-saga等技术栈Demo
 # 说明
 >该项目是为了学习react、webpack、antd等相关技术栈而搭建的，希望能在学习的过程中，记录相关的问题。
-
+# 演示
+![演示](https://github.com/foxkingpk/react-antd-webpack2-sagas-router4/blob/master/assets/imgs/demo.gif?raw=true)
 ## 安装
 进入源码主目录，运行`cnpm install`安装时，可能会比较慢。
 
