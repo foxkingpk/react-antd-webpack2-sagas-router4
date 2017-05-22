@@ -8,12 +8,13 @@ class SenderEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      region: '',
-      address: '',
-      postCode: '',
-      phone: '',
-      tel: ''
+      sendName: '',
+      sendcity: [],
+      sendaddr: '',
+      sendzipcode: '',
+      sendmobile: '',
+      sendtel: '',
+      sendcompany: ''
     };
   } 
   handleSubmit() {
@@ -44,7 +45,7 @@ class SenderEdit extends React.Component {
 
     return (<Modal
       visible={true}
-      style={{ top: '50%', marginTop: '-262px' }}
+      style={{ top: '50%', marginTop: '-290px' }}
       title={this.props.data.title}
       onOk={this.props.data.handleOk}
       onCancel={this.props.data.handleCancel}
@@ -64,8 +65,8 @@ class SenderEdit extends React.Component {
     >
       <Form layout="horizontal">
         <FormItem label="联系人" {...formItemLayout}>
-          {getFieldDecorator('name', {
-            initialValue: this.props.data.name,
+          {getFieldDecorator('sendName', {
+            initialValue: this.props.data.sendName,
             rules: [
               {
                 required: true,
@@ -75,8 +76,8 @@ class SenderEdit extends React.Component {
           })(<Input placeholder="请输入联系人" />)}
         </FormItem>
         <FormItem label="所在地" {...formItemLayout}>
-          {getFieldDecorator('region', {
-            initialValue: this.props.data.region,
+          {getFieldDecorator('sendcity', {
+            initialValue: this.props.data.sendcity,
             rules: [
               {
                 required: true,
@@ -91,8 +92,8 @@ class SenderEdit extends React.Component {
           />)}
         </FormItem>
         <FormItem label="街道地址" {...formItemLayout}>
-          {getFieldDecorator('address', {
-            initialValue: this.props.data.address,
+          {getFieldDecorator('sendaddr', {
+            initialValue: this.props.data.sendaddr,
             rules: [
               {
                 required: true,
@@ -103,14 +104,19 @@ class SenderEdit extends React.Component {
             <Input placeholder="请输入街道地址" />
           )}
         </FormItem>
+        <FormItem label="公司" {...formItemLayout}>
+          {getFieldDecorator('sendcompany', {
+            initialValue: this.props.data.sendcompany
+          })(<Input placeholder="请输入公司名称" />)}
+        </FormItem>
         <FormItem label="邮编" {...formItemLayout}>
-          {getFieldDecorator('postCode', {
-            initialValue: this.props.data.postCode
+          {getFieldDecorator('sendzipcode', {
+            initialValue: this.props.data.sendzipcode
           })(<Input placeholder="请输入邮编" />)}
         </FormItem>
         <FormItem label="手机" {...formItemLayout}>
-          {getFieldDecorator('phone', {
-            initialValue: this.props.data.phone,
+          {getFieldDecorator('sendmobile', {
+            initialValue: this.props.data.sendmobile,
             rules: [
               {
                 required: true,
@@ -120,8 +126,8 @@ class SenderEdit extends React.Component {
           })(<Input placeholder="请输入手机号" />)}
         </FormItem>
         <FormItem label="电话" {...formItemLayout}>
-          {getFieldDecorator('tel', {
-            initialValue: this.props.data.tel
+          {getFieldDecorator('sendtel', {
+            initialValue: this.props.data.sendtel
           })(<Input placeholder="请输入电话号码" />)}
         </FormItem>
         <FormItem {...formItemLayoutLast}>

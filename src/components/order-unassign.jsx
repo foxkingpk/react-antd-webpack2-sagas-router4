@@ -1,6 +1,6 @@
 import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select } from 'antd';
+import { Table, Icon, Row, Col, Input, Select, message } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
 import OrderVendorList from './order-vendor-list';
 
@@ -36,6 +36,7 @@ class OrderUnassign extends React.Component {
               }
             });
             this.hideDialog();
+            message.success('订单分配操作成功');
           });
         },
         handleCancel: () => {
@@ -121,7 +122,6 @@ class OrderUnassign extends React.Component {
       width: 100,
       fixed: 'right',
       render: (text, record) => (<a href="javascript:;" onClick={(record, e) => {
-        console.log("&&&&&&&&&&&&&&")
         this.setState({
           ...this.state,
           showModal: true

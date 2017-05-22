@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select, notification, Modal } from 'antd';
+import { Table, message, Row, Col, Input, Select, notification, Modal } from 'antd';
 import DropOption from 'COMPONENTS/DropOption';
 import 'ASSETS/less/orderlistnew.less';
 import mLODOP from 'UTILS/print.js';
@@ -76,11 +76,16 @@ const startPrint = (record) => {
     });
   } else {
     const tempLodop = mLODOP.getMLodop();
-    Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getExpressTemplateResource()]).then((values) => {
-      console.log(values);
+    Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getDefaultSenderResource(), API.getExpressTemplateResource()]).then((values) => {
       const defaultPrinter = values[0].data.data.printer;
-      const printData = values[1].data.data;
-      const tempdata = values[2].data.data;
+      const receiverData = values[1].data.data;
+      const senderData = values[2].data.data;
+      const tempdata = values[3].data.data;
+      let reSendCity = '';
+      if (senderData && senderData.sendcity) {
+        reSendCity = '' + senderData.sendcity[0] + senderData.sendcity[1] + senderData.sendcity[2];
+      }
+      const printData = { ...receiverData, ...senderData, sendcity: reSendCity };
       mLODOP.printPurge(defaultPrinter);
       mLODOP.printResume(defaultPrinter);
       const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
@@ -106,9 +111,10 @@ const startPrint = (record) => {
 };
 const onBackOrderItem = (id) => {
   API.updateOrderVendorResource({ id }).then((res) => {
-      console.log(res);
+    console.log(res);
+    message.success('订单退回操作成功');
   });
-}
+};
 class OrderListNew extends React.Component {
   constructor() {
     super();

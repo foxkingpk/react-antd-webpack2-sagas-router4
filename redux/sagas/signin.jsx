@@ -21,10 +21,9 @@ function* loginRequest(data) {
     let isAdmin = false;
     console.log(data.username.toLowerCase());
     if (data.username.toLowerCase() === 'admin') {
-      console.log("bingo")
       isAdmin = true;
     }
-    yield put(loginSuccess(response.data.payload.token, isAdmin, data.username));
+    yield put(loginSuccess(response.data.data.token, isAdmin, data.username));
     if (isAdmin) {
       yield put(setCurrentItem('orderUnassign'));
       yield put(setOpenKeys(['ordersAssign']));

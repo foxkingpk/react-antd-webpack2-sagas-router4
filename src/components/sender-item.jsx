@@ -2,22 +2,23 @@ import React from 'react';
 import { Card, Badge } from 'antd';
 import 'ASSETS/less/sender-item.less'
 
-const SenderItem = ({ props, editSenderDlg }) => {
+const SenderItem = ({ props, editSenderDlg, delDlg }) => {
   const style = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   };
   const title= <Badge count={props.default ? '默认' : ''}>
-      <span style={{ fontSize: 18 }}> {props.name} </span>
+      <span style={{ fontSize: 18 }}> {props.sendName} </span>
     </Badge>;
-  return (<Card className="senderItem" title={title} extra={<a href="javascript:;" onClick={editSenderDlg}>编辑</a>} style={{ width: 300, height: 210 }}>
-    <p style={style}>所在地：{props.region.province}{props.region.city}{props.region.county}</p>
-    <p style={style}>街道地址：{props.address}</p>
-    <p style={style}>单位：{props.company}</p>
-    <p style={style}>邮编：{props.postCode}</p>
-    <p style={style}>手机：{props.phone}</p>
-    <p style={style}>电话：{props.tel}</p>
+  return (<Card className="senderItem" title={title} extra={<div><a href="javascript:;" onClick={editSenderDlg}>编辑</a><a href="javascript:;" onClick={delDlg} style={{ marginLeft: 8, color: 'red' }}>删除</a></div>} style={{ width: 300, height: 210 }}>
+    <p style={style}>所在地：{props.sendcity[0]}{props.sendcity[1]}{props.sendcity[2]}</p>
+    <p style={style}>街道地址：{props.sendaddr}</p>
+    <p style={style}>单位：{props.sendcompany}</p>
+    <p style={style}>邮编：{props.sendzipcode}</p>
+    <p style={style}>手机：{props.sendmobile}</p>
+    <p style={style}>电话：{props.sendtel}</p>
+    <p style={style}>电话：{props.sendcompany}</p>
   </Card>);
 };
 

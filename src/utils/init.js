@@ -1,4 +1,4 @@
-import { setMenuFold } from 'REDUX/actions/menu';
+import { setMenuFold, setOpenKeys } from 'REDUX/actions/menu';
 import { loginSuccess } from 'REDUX/actions/user';
 
 export const init = (store) => {
@@ -11,5 +11,10 @@ export const init = (store) => {
   }
   if (localStorage.menuFold) {
     store.dispatch(setMenuFold(localStorage.menuFold === 'true' ? true : false));
+  }
+  const location = window.location.pathname;
+  const arr = location.split('/');
+  if (arr[1] && arr[2]) {
+    store.dispatch(setOpenKeys([arr[1]]));
   }
 };
