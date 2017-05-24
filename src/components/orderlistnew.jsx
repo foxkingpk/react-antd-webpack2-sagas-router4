@@ -111,8 +111,11 @@ const startPrint = (record) => {
 };
 const onBackOrderItem = (id) => {
   API.updateOrderVendorResource({ id }).then((res) => {
-    console.log(res);
-    message.success('订单退回操作成功');
+    if (res.data.code === 200) {
+      message.success('订单退回操作成功！');
+    } else {
+      message.error('订单退回操作失败！');
+    }
   });
 };
 class OrderListNew extends React.Component {
@@ -127,18 +130,25 @@ class OrderListNew extends React.Component {
   }
   componentDidMount() {
     this.request();
-  }  
+  }
   request(payload) {
     this.setState({
       loading: true
     });
 
     API.getOrderListNewResource(payload).then((res) => {
-      console.log(res);
-      this.setState({
-        data: res.data.data,
-        loading: false
-      });
+      if (res.data.code === 200) {
+        this.setState({
+          data: res.data.data,
+          loading: false
+        });
+      } else {
+        message.error('获取未发货订单信息失败！');
+        this.setState({
+          data: [],
+          loading: false
+        });
+      }
     });
   }
   handleTableChange(pagination) {

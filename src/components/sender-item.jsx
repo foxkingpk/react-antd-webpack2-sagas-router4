@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Badge } from 'antd';
-import 'ASSETS/less/sender-item.less'
+import 'ASSETS/less/sender-item.less';
+import PropTypes from 'prop-types';
 
 const SenderItem = ({ props, editSenderDlg, delDlg }) => {
   const style = {
@@ -18,8 +19,17 @@ const SenderItem = ({ props, editSenderDlg, delDlg }) => {
     <p style={style}>邮编：{props.sendzipcode}</p>
     <p style={style}>手机：{props.sendmobile}</p>
     <p style={style}>电话：{props.sendtel}</p>
-    <p style={style}>电话：{props.sendcompany}</p>
   </Card>);
 };
 
+SenderItem.propTypes = {
+  sendName: PropTypes.string,
+  sendcity: PropTypes.array,
+  sendaddr: PropTypes.string,
+  sendcompany: PropTypes.string,
+  sendmobile: PropTypes.number,
+  sendtel: PropTypes.string,
+  sendzipcode: PropTypes.number,
+  default: PropTypes.bool
+};
 export default SenderItem;

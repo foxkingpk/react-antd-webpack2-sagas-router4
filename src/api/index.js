@@ -17,7 +17,8 @@ import {
   GetOrderVendorsResource,
   SaveUnassignOrderResource,
   GetDefaultSenderResource,
-  DelSenderResource
+  DelSenderResource,
+  UpdateSenderResource
 } from './resource.js';
 
 export default {
@@ -64,13 +65,16 @@ export default {
     return HTTP.Get(GetOrderVendorsResource, payload);
   },
   saveUnassignOrderResource(payload) {
-    return HTTP.Get(SaveUnassignOrderResource, payload);
+    return HTTP.Post(SaveUnassignOrderResource, payload);
   },
   getDefaultSenderResource(payload) {
     return HTTP.Get(GetDefaultSenderResource, payload);
   },
   delSenderResource(payload) {
     return HTTP.Get(DelSenderResource, payload);
+  },
+  updateSenderResource(payload) {
+    return HTTP.Post(UpdateSenderResource, payload);
   },
   getOrderState() {
     return HTTP.Get(OrderStateResource);

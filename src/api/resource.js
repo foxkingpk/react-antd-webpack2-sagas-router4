@@ -19,7 +19,8 @@ const apiWX = {
   GetOrderVendors: '/api/getOrderVendors',
   SaveUnassignOrder: '/api/saveUnassignOrder',
   DefaultSender: '/api/defaultSender',
-  DelSender: '/api/delSender'
+  DelSender: '/api/delSender',
+  UpdateSender: '/api/updateSender'
 };
 
 const LoginResource = API_ROOT.concat(apiWX.Login);
@@ -40,6 +41,8 @@ const GetOrderVendorsResource = API_ROOT.concat(apiWX.GetOrderVendors);
 const SaveUnassignOrderResource = API_ROOT.concat(apiWX.SaveUnassignOrder);
 const GetDefaultSenderResource = API_ROOT.concat(apiWX.DefaultSender);
 const DelSenderResource = API_ROOT.concat(apiWX.DelSender);
+const UpdateSenderResource = API_ROOT.concat(apiWX.UpdateSender);
+
 export {
   LoginResource,
   LogoutResource,
@@ -58,5 +61,6 @@ export {
   GetOrderVendorsResource,
   SaveUnassignOrderResource,
   GetDefaultSenderResource,
-  DelSenderResource
+  DelSenderResource,
+  UpdateSenderResource
 };

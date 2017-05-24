@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Icon } from 'antd';
+import PropTypes from 'prop-types';
 import 'ASSETS/less/sender-new.less';
 
 const SenderNew = (props) => {
@@ -8,4 +9,7 @@ const SenderNew = (props) => {
   </Card>);
 };
 
+SenderNew.propTypes = {
+  newSenderDlg: PropTypes.func
+};
 export default SenderNew;

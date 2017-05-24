@@ -1,6 +1,7 @@
 import React from 'react';
 import API from 'API';
 import { Modal, Button, Table } from 'antd';
+import PropTypes from 'prop-types';
 
 class OrderVendorList extends React.Component {
   constructor(props) {
@@ -97,5 +98,7 @@ class OrderVendorList extends React.Component {
     </Modal>);
   }
 }
-
+OrderVendorList.propTypes = {
+  data: PropTypes.object
+};
 export default OrderVendorList;

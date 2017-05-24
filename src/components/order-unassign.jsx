@@ -11,8 +11,13 @@ class OrderUnassign extends React.Component {
   constructor() {
     super();
     this.state = {
+      queryKey: '',
+      queryStatus: '',
       collapsed: false,
-      pagination: { total: 100, showSizeChanger: true, showQuickJumper: true },
+      pagination: {
+        current: 1,
+        pageSize: 10
+      },
       data: [],
       loading: false,
       showModal: false,
@@ -27,16 +32,28 @@ class OrderUnassign extends React.Component {
             }
           });
 
-          API.saveUnassignOrderResource(payload).then((res) => {
-            this.setState({
-              ...this.state,
-              modalData: {
-                ...this.state.modalData,
-                confirmLoading: false
-              }
-            });
-            this.hideDialog();
-            message.success('订单分配操作成功');
+          API.saveUnassignOrderResource({ id: payload[0] }).then((res) => {
+            if (res.data.code === 200) {
+              this.setState({
+                ...this.state,
+                modalData: {
+                  ...this.state.modalData,
+                  confirmLoading: false
+                }
+              });
+              this.hideDialog();
+              message.success('订单分配操作成功');
+            } else {
+              this.setState({
+                ...this.state,
+                modalData: {
+                  ...this.state.modalData,
+                  confirmLoading: false
+                }
+              });
+              this.hideDialog();
+              message.error('订单分配操作失败！');
+            }
           });
         },
         handleCancel: () => {
@@ -52,7 +69,10 @@ class OrderUnassign extends React.Component {
     });
   }
   componentDidMount() {
-    this.request();
+    this.request({
+      page: 1,
+      pageSize: 10
+    });
   }  
   request(payload) {
     this.setState({
@@ -61,22 +81,79 @@ class OrderUnassign extends React.Component {
 
     API.getUnassignOrdersResource(payload).then((res) => {
       this.setState({
+        ...this.state,
         data: res.data.data,
         loading: false
       });
     });
   }
   handleTableChange(pagination) {
-    console.log('handleTableChange:', pagination);
     this.request({
       page: pagination.current,
-      pageSize: pagination.pageSize
+      pageSize: pagination.pageSize,
+      unassignStatus: this.state.queryStatus,
+      unassignKey: this.state.queryKey
     });
   }
   onChange(value) {
-    console.log("onchange",value); 
+    this.setState({
+      ...this.state,
+      queryStatus: value,
+      pagination: {
+        ...this.state.pagination,
+        current: 1
+      }
+    });
+    this.request({
+      unassignStatus: value,
+      unassignKey: this.state.queryKey,
+      page: 1,
+      pageSize: this.state.pagination.pageSize
+    });
+  }
+  onSearch(value) {
+    this.setState({
+      ...this.state,
+      queryKey: value,
+      pagination: {
+        ...this.state.pagination,
+        current: 1
+      }
+    });
+    this.request({
+      unassignStatus: this.state.queryStatus,
+      unassignKey: value,
+      page: 1,
+      pageSize: this.state.pagination.pageSize
+    });
+  }
+  onPaginationChange(page, pageSize) {
+    this.setState({
+      ...this.state,
+      pagination: {
+        current: page,
+        pageSize
+      }
+    });
+  }
+  onShowSizeChange(current, size) {
+    this.setState({
+      ...this.state,
+      pagination: {
+        current,
+        pageSize: size
+      }
+    });
   }
   render() {
+    const pagination = { total: 100,
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: this.state.pagination.current,
+      pageSize: this.state.pagination.pageSize,
+      onChange: this.onPaginationChange.bind(this),
+      onShowSizeChange: this.onShowSizeChange.bind(this)
+    };
     const columns = [{
       title: '编号',
       key: 'id',
@@ -133,7 +210,7 @@ class OrderUnassign extends React.Component {
     return <div className="orderListnew">
       <Row style={{ marginBottom: 12 }}>
         <Col xs={12} sm={8} style={{ marginRight: 12 }}>
-          <Search placeholder="请输入查询的收件人" onSearch={value => console.log(value)} />
+          <Search placeholder="请输入查询的收件人" onSearch={this.onSearch.bind(this)} />
         </Col>
         <Col xs={8} sm={8} lg={4} style={{ margin: '0 12px' }}>
           <Select className="orderPrint" placeholder="请选择订单分配状态" allowClear onChange={this.onChange.bind(this)}>
@@ -148,7 +225,7 @@ class OrderUnassign extends React.Component {
         columns={columns}
         rowKey={record => record.id}
         dataSource={this.state.data}
-        pagination={this.state.pagination}
+        pagination={pagination}
         loading={this.state.loading}
         onChange={this.handleTableChange.bind(this)}
         scroll={{ x: 1500 }}

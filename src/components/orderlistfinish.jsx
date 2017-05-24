@@ -1,10 +1,9 @@
 import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select } from 'antd';
+import { Table, message, Row, Col, Input, Select } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
 
 const Search = Input.Search;
-const Option = Select.Option;
 const columns = [{
   title: '编号',
   key: 'id',
@@ -58,18 +57,25 @@ class OrderListFinish extends React.Component {
   }
   componentDidMount() {
     this.request();
-  }  
+  }
   request(payload) {
     this.setState({
       loading: true
     });
 
     API.getOrderListFinishResource(payload).then((res) => {
-      console.log(res);
-      this.setState({
-        data: res.data.data,
-        loading: false
-      });
+      if (res.data.code === 200) {
+        this.setState({
+          data: res.data.data,
+          loading: false
+        });
+      } else {
+        message.error('获取已发货订单信息失败！');
+        this.setState({
+          data: [],
+          loading: false
+        });
+      }
     });
   }
   handleTableChange(pagination) {
@@ -80,18 +86,13 @@ class OrderListFinish extends React.Component {
     });
   }
   onChange(value) {
-    console.log("onchange",value);
+    console.log('onchange', value);
   }
   render() {
-    return <div className="orderListnew">
+    return (<div className="orderListnew">
       <Row style={{ marginBottom: 12 }}>
         <Col xs={12} sm={8} lg={4} style={{ marginRight: 12 }}>
           <Search placeholder="请输入查询的收件人" onSearch={value => console.log(value)} />
-        </Col>
-        <Col xs={24} sm={12} lg={8} style={{ margin: '0 12px' }}>
-          
-        </Col>
-        <Col xs={24} sm={12} lg={8}>  
         </Col>
       </Row>
       <Table
@@ -103,7 +104,7 @@ class OrderListFinish extends React.Component {
         onChange={this.handleTableChange.bind(this)}
         scroll={{ x: 1500 }}
       />
-    </div>;
+    </div>);
   }
 }
 

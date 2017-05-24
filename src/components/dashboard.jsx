@@ -1,5 +1,4 @@
 import React from 'react';
-import { Layout, Menu, Row, Col, Icon, Modal, Button, Input } from 'antd';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import 'ASSETS/less/dashboard.less';
@@ -8,7 +7,6 @@ import avar from 'ASSETS/imgs/avar.gif';
 class Dashboard extends React.Component {
   constructor() {
     super();
-    this.state = { someKey: 'someValue' };
   }
 
   render() {
@@ -35,10 +33,6 @@ class Dashboard extends React.Component {
         </div>
       </div>
     );
-  }
-
-  componentDidMount() {
-    this.setState({ someKey: 'otherValue' });
   }
 }
 function mapStateToProp(state) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import API from 'API';
-import { Table, Icon, Row, Col, Input, Select } from 'antd';
+import { Table, message, Row, Col, Input } from 'antd';
 import 'ASSETS/less/orderlistnew.less';
 
 const Search = Input.Search;
@@ -69,11 +69,18 @@ class OrderAssigned extends React.Component {
     });
 
     API.getAssignedOrdersResource(payload).then((res) => {
-      console.log(res);
-      this.setState({
-        data: res.data.data,
-        loading: false
-      });
+      if (res.data.code === 200) {
+        this.setState({
+          data: res.data.data,
+          loading: false
+        });
+      } else {
+        this.setState({
+          data: [],
+          loading: false
+        });
+        message.error('获取未分配订单操失败！');
+      }
     });
   }
   handleTableChange(pagination) {
@@ -84,18 +91,13 @@ class OrderAssigned extends React.Component {
     });
   }
   onChange(value) {
-    console.log("onchange",value);
+    console.log('onchange', value);
   }
   render() {
-    return <div className="orderListnew">
+    return (<div className="orderListnew">
       <Row style={{ marginBottom: 12 }}>
         <Col xs={12} sm={8} lg={4} style={{ marginRight: 12 }}>
           <Search placeholder="请输入查询的收件人" onSearch={value => console.log(value)} />
-        </Col>
-        <Col xs={24} sm={12} lg={8} style={{ margin: '0 12px' }}>
-          
-        </Col>
-        <Col xs={24} sm={12} lg={8}>  
         </Col>
       </Row>
       <Table
@@ -107,7 +109,7 @@ class OrderAssigned extends React.Component {
         onChange={this.handleTableChange.bind(this)}
         scroll={{ x: 1500 }}
       />
-    </div>;
+    </div>);
   }
 }
 

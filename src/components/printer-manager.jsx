@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, message, notification, Card } from 'antd';
+import { message, notification, Card } from 'antd';
 import API from 'API';
 import mLODOP from 'UTILS/print.js';
 
@@ -20,7 +20,11 @@ class PrinterManager extends React.Component {
   }
   changeDefaultPrinter() {
     API.changeDefaultPrinter().then((res) => {
-      message.success('修改默认打印机成功！');
+      if (res.data.code === 200) {
+        message.success('修改默认打印机操作成功！');
+      } else {
+        message.error('修改默认打印机作失败！');
+      }
     });
   }
   checkIsInstall() {
@@ -38,7 +42,7 @@ class PrinterManager extends React.Component {
         cmsg = '当前C-Lodop云打印可用!C-Lodop版本号：' + CLODOP.CVERSION;
       }
     } else {
-      cmsg= '';
+      cmsg = '';
       notification.error({
         message: '错误提示',
         description: '没有检测到打印插件，请确保打印程序已安装，或者打印程序已经启动运行！'

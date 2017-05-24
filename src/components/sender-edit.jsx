@@ -1,21 +1,13 @@
 import React from 'react';
 import { Modal, Form, Button, Input, Checkbox, Cascader } from 'antd';
-import city from 'UTILS/city'
-import 'ASSETS/less/dialog.less'
+import city from 'UTILS/city';
+import 'ASSETS/less/dialog.less';
+import PropTypes from 'prop-types';
 
 const FormItem = Form.Item;
 class SenderEdit extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sendName: '',
-      sendcity: [],
-      sendaddr: '',
-      sendzipcode: '',
-      sendmobile: '',
-      sendtel: '',
-      sendcompany: ''
-    };
   } 
   handleSubmit() {
     this.props.form.validateFields((err, values) => {
@@ -133,9 +125,17 @@ class SenderEdit extends React.Component {
         <FormItem {...formItemLayoutLast}>
           <Checkbox checked={this.props.data.default} onChange={this.props.data.onChange}>设置为默认发货地址</Checkbox>
         </FormItem>
+        <FormItem style={{ display: 'none' }}>
+          {getFieldDecorator('id', {
+            initialValue: this.props.data.id
+          })(<Input type="hidden" />)}
+        </FormItem>
       </Form>
     </Modal>);
   }
 }
 
+SenderEdit.propTypes = {
+  data: PropTypes.object
+};
 export default Form.create()(SenderEdit);

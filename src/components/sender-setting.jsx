@@ -15,13 +15,14 @@ class SenderSetting extends React.Component {
       datas: [],
       modalData: {
         title: '新增联系人',
-        name: '',
-        address: '',
-        region: [],
-        company: '',
-        postCode: '',
-        phone: '',
-        tel: '',
+        sendName: '',
+        sendaddr: '',
+        sendcity: [],
+        sendcompany: '',
+        sendzipcode: '',
+        sendmobile: '',
+        sendtel: '',
+        id: null,
         default: false,
         confirmLoading: false,
         handleOk: (payload) => {
@@ -32,19 +33,55 @@ class SenderSetting extends React.Component {
               confirmLoading: true
             }
           });
-
-          API.addSenderResource(payload).then((res) => {
-            message.success(this.state.isNewDlg ? '新增联系人成功！' : '修改联系人成功！');
-            this.setState({
-              ...this.state,
-              modalData: {
-                ...this.state.modalData,
-                confirmLoading: false
+          if (payload.id) {
+            API.updateSenderResource(payload).then((res) => {
+              if (res.data.code === 200) {
+                message.success('修改联系人成功！');
+                this.setState({
+                  ...this.state,
+                  modalData: {
+                    ...this.state.modalData,
+                    confirmLoading: false
+                  }
+                });
+                this.hideDialog();
+                this.getData();
+              } else {
+                this.setState({
+                  ...this.state,
+                  modalData: {
+                    ...this.state.modalData,
+                    confirmLoading: false
+                  }
+                });
+                message.error('修改联系人操作失败！');
               }
             });
-            this.hideDialog();
-            this.getData();
-          });
+          } else {
+            API.addSenderResource(payload).then((res) => {
+              if (res.data.code === 200) {
+                message.success('新增联系人成功！');
+                this.setState({
+                  ...this.state,
+                  modalData: {
+                    ...this.state.modalData,
+                    confirmLoading: false
+                  }
+                });
+                this.hideDialog();
+                this.getData();
+              } else {
+                this.setState({
+                  ...this.state,
+                  modalData: {
+                    ...this.state.modalData,
+                    confirmLoading: false
+                  }
+                });
+                message.error('新增联系人操作失败！');
+              }
+            });
+          }
         },
         handleCancel: () => {
           this.hideDialog();
@@ -66,9 +103,16 @@ class SenderSetting extends React.Component {
   }
   getData() {
     API.getSendersResource().then((res) => {
-      this.setState({
-        datas: res.data.data.list
-      });
+      if (res.data.code === 200) {
+        this.setState({
+          datas: res.data.data.list
+        });
+      } else {
+        this.setState({
+          datas: []
+        });
+        message.error('获取寄件人信息失败！');
+      }
     });
   }
   hideDialog() {
@@ -90,7 +134,8 @@ class SenderSetting extends React.Component {
         sendzipcode: '',
         sendmobile: '',
         sendtel: '',
-        default: false
+        default: false,
+        id: null
       },
       showModal: true,
       isNewDlg: true
@@ -110,7 +155,8 @@ class SenderSetting extends React.Component {
         sendzipcode: item.sendzipcode,
         sendmobile: item.sendmobile,
         sendtel: item.sendtel,
-        default: item.default
+        default: item.default,
+        id: item.id
       },
       showModal: true,
       isNewDlg: false
