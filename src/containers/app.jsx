@@ -43,7 +43,7 @@ class App extends React.Component {
   }
   getAncestorKeys(key) {
     const map = {
-      sub3: ['sub2']
+      msgOrder: ['express']
     };
     return map[key] || [];
   }
@@ -89,7 +89,15 @@ class App extends React.Component {
   }
   render() {
     if (!this.props.authenticated) {
-      return (<Redirect to="/login" />);
+      return (<Redirect to={{
+        pathname: '/login',
+        state: {
+          from: {
+            pathname: this.props.location.pathname
+          }
+        }
+      }}
+      />);
     }
     const menuProps = !this.props.menuFold ? {
       onOpenChange: this.onOpenChange.bind(this),
@@ -98,7 +106,9 @@ class App extends React.Component {
     const location = this.props.location.pathname;
     const arr = location.split('/');
     let defaultSelectedKeys = null;
-    if (arr[1] && arr[2]) {
+    if (arr[1] && arr[2] && arr[3]) {
+      defaultSelectedKeys = [arr[3]];
+    } else if (arr[1] && arr[2]) {
       defaultSelectedKeys = [arr[2]];
     } else if (arr[1]) {
       defaultSelectedKeys = [arr[1]];
@@ -113,7 +123,7 @@ class App extends React.Component {
             <img alt="logo" src={Logo} className="logo" />
           </div>
           <Menu {...menuProps} mode={this.props.menuFold ? 'vertical' : 'inline'} defaultSelectedKeys={defaultSelectedKeys} onClick={this.menuClick.bind(this)}>
-            <Menu.Item key="dashboard"><Link to="/dashboard"><Icon type="home" /><span className="nav-text">首页</span></Link></Menu.Item>
+            {/*<Menu.Item key="dashboard"><Link to="/dashboard"><Icon type="home" /><span className="nav-text">首页</span></Link></Menu.Item>*/}
             { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
               <Menu.Item key="orderUnassign">
                 <Link to="/orders/orderUnassign">未分配订单</Link>
@@ -122,22 +132,34 @@ class App extends React.Component {
                 <Link to="/orders/orderAssigned">已分配订单</Link>
               </Menu.Item>
             </SubMenu> : ''}
-            <SubMenu key="express" title={<span><Icon type="schedule" /><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
-              <Menu.Item key="orderListNew">
-                <Link to="/express/orderListNew">未发货订单</Link>
-              </Menu.Item>
+            {this.props.isAdmin ? '' : <SubMenu key="express" title={<span><Icon type="schedule" /><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
+          
+              <SubMenu key="msgOrder" title="未发货订单">
+                <Menu.Item key="noMsgOrderList">
+                  <Link to="/express/orderListNew/noMsgOrderList">无留言/备注</Link>
+                </Menu.Item>
+                <Menu.Item key="msgOrderList">
+                  <Link to="/express/orderListNew/msgOrderList">有留言/备注</Link>
+                </Menu.Item>
+              </SubMenu>
               <Menu.Item key="orderListFinish">
                 <Link to="/express/orderListFinish">已发货订单</Link>
               </Menu.Item>
-            </SubMenu>
-            <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
+              <Menu.Item key="orderListBack">
+                <Link to="/express/orderListBack">退货订单</Link>
+              </Menu.Item>
+              <Menu.Item key="orderList">
+                <Link to="/express/orderList">所有订单</Link>
+              </Menu.Item>
+            </SubMenu> }
+            {this.props.isAdmin ? '' : <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
               <Menu.Item key="senderSetting">
                 <Link to="/print/senderSetting">寄件人设置</Link>
               </Menu.Item>
               <Menu.Item key="printerManager">
                 <Link to="/print/printerManager">打印机管理</Link>
               </Menu.Item>
-            </SubMenu>
+            </SubMenu> }
           </Menu>
         </Sider>
         <Layout style={{ overflow: 'auto', height: '100vh' }}>

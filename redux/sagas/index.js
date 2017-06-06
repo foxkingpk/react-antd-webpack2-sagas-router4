@@ -1,5 +1,5 @@
 // saga 模块化引入
-import { fork } from 'redux-saga/effects';
+import { fork, all } from 'redux-saga/effects';
 import 'babel-polyfill';
 
 // 异步逻辑
@@ -9,5 +9,5 @@ import { fetchData } from './fetchdata';
 
 // 单一进入点，一次启动所有 Saga
 export default function* rootSaga() {
-  yield [fork(signin), fork(signout), fork(fetchData)];
+  yield all([fork(signin), fork(signout), fork(fetchData)]);
 }

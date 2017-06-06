@@ -1,28 +1,31 @@
 import React from 'react';
 import API from 'API';
-import { Table, Input, message, Button } from 'antd';
+import { Table, Input, message, Button, notification } from 'antd';
+import mLODOP from 'UTILS/print.js';
 import OrderDetail from './order-detail';
-import OrderVendorList from './order-vendor-list';
+import OrderPrintPreview from './order-print-preview';
 
 const Search = Input.Search;
 
-class OrderUnassign extends React.Component {
+class OrderListBack extends React.Component {
   constructor() {
     super();
     this.state = {
       selectedRowKeys: [],
-      orderDetailData: null,
+      orderDetailData: {
+        disableEdit: true
+      },
       queryKey: '',
       queryStatus: '',
       collapsed: false,
       orderID: null,
+      pageTotal: 0,
       pagination: {
         current: 1,
         pageSize: 10
       },
       data: [],
       loading: false,
-      showModal: false,
       modalData: {
         confirmLoading: false,
         handleOk: (payload) => {
@@ -60,12 +63,15 @@ class OrderUnassign extends React.Component {
         },
         handleCancel: () => {
           this.hideDialog();
+        },
+        handlePreview: () => {
+          this.startPrint() ? this.hideDialog() : '';
         }
       }
     };
   }
   componentDidMount() {
-    document.title = '未分配订单';
+    document.title = '退货订单';
     this.request({
       page: 1,
       pageSize: 10
@@ -89,10 +95,20 @@ class OrderUnassign extends React.Component {
       }
     });
   }
-  assignOrders() {
+  hideDialog() {
+    this.setState({
+      ...this.state,
+      showModal: false
+    });
+  }
+  printOrder() {
     console.log(this.state.selectedRowKeys.length);
     if (this.state.selectedRowKeys.length > 1) {
       message.error('该功能不支持批量操作！');
+      return;
+    }
+    if (this.state.selectedRowKeys.length === 0) {
+      message.error('请先选择打印的快递订单！');
       return;
     }
     this.setState({
@@ -100,6 +116,55 @@ class OrderUnassign extends React.Component {
       orderID: this.state.selectedRowKeys,
       showModal: true
     });
+  }
+  startPrint() {
+    let result = false;
+    if (!mLODOP.getMLodop()) {
+      notification.error({
+        message: '错误提示',
+        description: '你还没安装打印插件，或者没有运行打印程序。请到打印机管理页面进行下载、安装、测试！',
+        duration: 5
+      });
+    } else {
+      const tempLodop = mLODOP.getMLodop();
+      Promise.all([API.getDefaultPrinter(), API.getOrderPrintDataResource(), API.getDefaultSenderResource(), API.getExpressTemplateResource()]).then((values) => {
+        const defaultPrinter = values[0].data.data.printer;
+        const receiverData = values[1].data.data;
+        const senderData = values[2].data.data;
+        const tempdata = values[3].data.data;
+        let reSendCity = '';
+        if (senderData && senderData.sendcity) {
+          reSendCity = '' + senderData.sendcity[0] + senderData.sendcity[1] + senderData.sendcity[2];
+        }
+        const printData = { ...receiverData, ...senderData, sendcity: reSendCity };
+        mLODOP.printPurge(defaultPrinter);
+        mLODOP.printResume(defaultPrinter);
+        const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
+        eval(rTemplate);
+        if (!mLODOP.checkPrinter(defaultPrinter)) {
+          notification.error({
+            message: '错误提示',
+            description: '当前设置的默认打印机没有找到，请前往"打印设置"页面，重新设置默认打印机！'
+          });
+        } else {
+          tempLodop.SET_PRINT_PAGESIZE(1, parseFloat(tempdata.width) * 10, parseFloat(tempdata.height) * 10, '');
+          tempLodop.SET_SHOW_MODE('HIDE_PAPER_BOARD', true);
+          tempLodop.SET_PREVIEW_WINDOW(2, 1, 1, 700, 440, '快递单打印');
+          tempLodop.SET_SHOW_MODE('PREVIEW_IN_BROWSE', true);
+          tempLodop.SET_PRINTER_INDEX(defaultPrinter);
+          tempLodop.SET_PRINT_MODE('AUTO_CLOSE_PREWINDOW', 1);
+          mLODOP.preview();
+          this.hideDialog();
+        }
+      }).catch((reason) => {
+        notification.error({
+          message: '错误提示',
+          description: reason
+        });
+        console.log(reason);
+      });
+    }
+    return result;
   }
   onSearch(value) {
     this.setState({
@@ -111,24 +176,7 @@ class OrderUnassign extends React.Component {
       }
     });
     this.request({
-      unassignStatus: this.state.queryStatus,
-      unassignKey: value,
-      page: 1,
-      pageSize: this.state.pagination.pageSize
-    });
-  }
-  onChange(value) {
-    this.setState({
-      ...this.state,
-      queryStatus: value,
-      pagination: {
-        ...this.state.pagination,
-        current: 1
-      }
-    });
-    this.request({
-      unassignStatus: value,
-      unassignKey: this.state.queryKey,
+      orderID: value,
       page: 1,
       pageSize: this.state.pagination.pageSize
     });
@@ -138,12 +186,13 @@ class OrderUnassign extends React.Component {
       loading: true
     });
 
-    API.getUnassignOrdersResource(payload).then((res) => {
+    API.getBackOrdersResource(payload).then((res) => {
       this.setState({
         ...this.state,
         selectedRowKeys: [],
         data: res.data.data,
-        loading: false
+        loading: false,
+        pageTotal: res.data.total
       });
     });
   }
@@ -151,14 +200,7 @@ class OrderUnassign extends React.Component {
     this.request({
       page: pagination.current,
       pageSize: pagination.pageSize,
-      unassignStatus: this.state.queryStatus,
-      unassignKey: this.state.queryKey
-    });
-  }
-  hideDialog() {
-    this.setState({
-      ...this.state,
-      showModal: false
+      orderID: this.state.queryKey
     });
   }
   onSelectChange(selectedRowKeys) {
@@ -175,7 +217,11 @@ class OrderUnassign extends React.Component {
       if (res.data.code === 200) {
         this.setState({
           ...this.state,
-          orderDetailData: res.data.data
+          pageTotal: res.data.total,
+          orderDetailData: {
+            ...this.state.orderDetailData,
+            ...res.data.data
+          }
         });
       } else {
         message.error('订单分配操作失败！');
@@ -183,7 +229,8 @@ class OrderUnassign extends React.Component {
     });
   }
   render() {
-    const pagination = { total: 100,
+    const pagination = {
+      total: this.state.pageTotal,
       showSizeChanger: true,
       showQuickJumper: true,
       current: this.state.pagination.current,
@@ -226,33 +273,20 @@ class OrderUnassign extends React.Component {
       key: 'express',
       dataIndex: 'express',
       width: 80
-    }, {
-      title: '订单分配状态',
-      key: 'assign',
-      dataIndex: 'assign',
-      width: 80
     }];
-    const detail={
-      phone: '13952366532',
-      disableEdit: true,
-      saveOrderDetail: (args) => {
-        console.log(args);
-      }
-    };
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
       onChange: this.onSelectChange.bind(this)
     };
-    return (<div>
+    return (<div className="orderListBack">
       <div className="clearfix" style={{ marginBottom: 12 }}>
         <div style={{ float: 'right', marginRight: 12 }}>
-          <Search placeholder="请输入查询的收件人" onSearch={this.onSearch.bind(this)} />
+          <Search placeholder="请输入快递单号" onSearch={this.onSearch.bind(this)} />
         </div>
         <div style={{ float: 'left', display: 'flex' }}>
-          <Button type="primary" icon="download" style={{ margin: '0 5px' }} onClick={this.assignOrders.bind(this)}>分配订单</Button>
+          <Button type="primary" icon="printer" style={{ margin: '0 5px' }} onClick={this.printOrder.bind(this)}>打印快递单</Button>
         </div>
       </div>
-      <div id="wokao">
       <Table
         columns={columns}
         rowKey={record => record.id}
@@ -264,11 +298,10 @@ class OrderUnassign extends React.Component {
         scroll={{ x: 1500 }}
         onRowClick={this.onRowClick.bind(this)}
       />
-      </div>
       <OrderDetail {...this.state.orderDetailData} />
-      { this.state.showModal ? <OrderVendorList data={this.state.modalData} /> : '' }
+      { this.state.showModal ? <OrderPrintPreview data={this.state.modalData} /> : '' }
     </div>);
   }
 }
 
-export default OrderUnassign;
+export default OrderListBack;

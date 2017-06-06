@@ -24,13 +24,13 @@ function* loginRequest(data) {
       isAdmin = true;
     }
     yield put(loginSuccess(response.data.data.token, isAdmin, data.username));
-    if (isAdmin) {
-      yield put(setCurrentItem('orderUnassign'));
-      yield put(setOpenKeys(['ordersAssign']));
-    } else {
-      yield put(setCurrentItem('orderListNew'));
-      yield put(setOpenKeys(['ordersCenter']));
-    }
+    // if (isAdmin) {
+    //   yield put(setCurrentItem('orderUnassign'));
+    //   yield put(setOpenKeys(['ordersAssign']));
+    // } else {
+    //   yield put(setCurrentItem('orderListNew'));
+    //   yield put(setOpenKeys(['ordersCenter']));
+    // }
   } else {
     yield put(loginFailure({
       code: response.data.code,

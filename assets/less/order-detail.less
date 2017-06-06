@@ -1,0 +1,75 @@
+#components-tabs-demo-card-top .code-box-demo {
+  background: #ececec;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-content {
+  margin-top: -16px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-content > .ant-tabs-tabpane {
+  background: #fff;
+  padding: 16px;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab {
+  border-color: transparent;
+}
+
+.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
+  border-color: #fff;
+}
+
+.item {
+    .item-detail{
+        display: flex;
+        padding-right: 15px;
+        margin-top: 15px;
+        .title{
+            margin-right: 10px;
+            width: 100px;
+            text-align: right;
+        }
+        .content{
+            flex: 1;
+            textarea{
+                position: relative;
+                display: inline-block;
+                padding: 4px 7px;
+                width: 100%;
+                cursor: text;
+                font-size: 12px;
+                line-height: 1.5;
+                color: rgba(0, 0, 0, 0.65);
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #d9d9d9;
+                border-radius: 4px;
+                transition: all .3s;
+                &[disabled] {
+                    background-color: #f7f7f7;
+                    opacity: 1;
+                    cursor: not-allowed;
+                    color: rgba(0, 0, 0, 0.25);
+                }
+            }
+        }
+    }
+}
+
+.ant-tabs-tabpane.ant-tabs-tabpane-active .basic, .ant-tabs-tabpane.ant-tabs-tabpane-active .express{
+    display: block;
+}
+.ant-tabs-tabpane.ant-tabs-tabpane-inactive .basic, .ant-tabs-tabpane.ant-tabs-tabpane-inactive .express{
+    display: none;
+}
+.card-container .show{
+    display: block;
+}
+.card-container .hide{
+    display: none;
+}
+.content .ant-form-item {
+    margin-bottom: 0;
+}

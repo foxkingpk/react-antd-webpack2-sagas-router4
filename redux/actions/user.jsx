@@ -1,4 +1,4 @@
-import { REQUEST_DATA, RECIVE_DATA, LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS } from './actionstype.js';
+import { REQUEST_DATA, RECIVE_DATA, LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, TOGGLE_ORDER_DETAIL } from './actionstype.js';
 
 export const loginRequest = (data) => {
   return { type: LOGIN_REQUEST, payload: data };
@@ -29,4 +29,7 @@ export const requestData = (data) => {
 };
 export const reciveData = (data) => {
   return { type: RECIVE_DATA, payload: data };
+};
+export const toggleOrderDetail = (data) => {
+  return { type: TOGGLE_ORDER_DETAIL, payload: data };
 };

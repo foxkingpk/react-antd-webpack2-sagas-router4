@@ -18,7 +18,11 @@ import {
   SaveUnassignOrderResource,
   GetDefaultSenderResource,
   DelSenderResource,
-  UpdateSenderResource
+  UpdateSenderResource,
+  UpdateOrdersExpressStatusResource,
+  GetOrderDetailResource,
+  GetAllOrdersResource,
+  GetBackOrdersResource
 } from './resource.js';
 
 export default {
@@ -75,6 +79,18 @@ export default {
   },
   updateSenderResource(payload) {
     return HTTP.Post(UpdateSenderResource, payload);
+  },
+  updateOrdersExpressStatusResource(payload) {
+    return HTTP.Get(UpdateOrdersExpressStatusResource, payload);
+  },
+  getOrderDetailResource(payload) {
+    return HTTP.Get(GetOrderDetailResource, payload);
+  },
+  getAllOrdersResource(payload) {
+    return HTTP.Get(GetAllOrdersResource, payload);
+  },
+  getBackOrdersResource(payload) {
+    return HTTP.Get(GetBackOrdersResource, payload);
   },
   getOrderState() {
     return HTTP.Get(OrderStateResource);

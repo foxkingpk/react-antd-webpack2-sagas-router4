@@ -4,6 +4,8 @@ import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginRequest } from 'REDUX/actions/user';
 import Logo from 'ASSETS/imgs/logo.svg';
+import store from 'REDUX/store/';
+import { setOpenKeys } from 'REDUX/actions/menu';
 
 const FormItem = Form.Item;
 
@@ -36,8 +38,14 @@ class Login extends React.Component {
   }
 
   render() {
-    const { from } = this.props.location.state || { from: { pathname: '/' } };
+    const { from } = this.props.location.state || { from: { pathname: this.props.isAdmin ? '/orders/orderUnassign' : '/express/orderListNew/noMsgOrderList' } };
     if (this.props.authenticated) {
+      const arr = from.pathname.split('/');
+      if (arr[1] && arr[2] && arr[3]) {
+        store.dispatch(setOpenKeys(['express', 'msgOrder']));
+      } else if (arr[1] && arr[2]) {
+        store.dispatch(setOpenKeys([arr[1]]));
+      }
       return (<Redirect to={from.pathname} />);
     }
     const { getFieldDecorator } = this.props.form;
@@ -81,7 +89,8 @@ class Login extends React.Component {
 function mapStateToProp(state) {
   return {
     authenticated: state.userReducer.authenticated,
-    isAuthenticating: state.userReducer.isAuthenticating
+    isAuthenticating: state.userReducer.isAuthenticating,
+    isAdmin: state.userReducer.isAdmin
   };
 }
 function mapDispatchToProp(dispatch) {

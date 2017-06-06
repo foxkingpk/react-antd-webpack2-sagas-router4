@@ -14,7 +14,9 @@ export const init = (store) => {
   }
   const location = window.location.pathname;
   const arr = location.split('/');
-  if (arr[1] && arr[2]) {
+  if (arr[1] && arr[2] && arr[3]) {
+    store.dispatch(setOpenKeys([arr[1], 'msgOrder']));
+  } else if (arr[1] && arr[2]) {
     store.dispatch(setOpenKeys([arr[1]]));
   }
 };

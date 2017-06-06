@@ -1,7 +1,7 @@
 import React from 'react';
 import API from 'API';
-import { Table, message, Row, Col, Input } from 'antd';
-import 'ASSETS/less/orderlistnew.less';
+import { Table, message, Input } from 'antd';
+import OrderDetail from './order-detail';
 
 const Search = Input.Search;
 
@@ -55,13 +55,25 @@ class OrderAssigned extends React.Component {
     super();
     this.state = {
       collapsed: false,
-      pagination: { total: 50, showSizeChanger: true, showQuickJumper: true },
+      pageTotal: 0,
+      selectedRowKeys: [],
+      pagination: {
+        current: 1,
+        pageSize: 10
+      },
+      orderDetailData: {
+        disableEdit: false
+      },
       data: [],
       loading: false
     };
   }
   componentDidMount() {
-    this.request();
+    document.title = '已分配订单';
+    this.request({
+      page: 1,
+      pageSize: 10
+    });
   }  
   request(payload) {
     this.setState({
@@ -72,7 +84,9 @@ class OrderAssigned extends React.Component {
       if (res.data.code === 200) {
         this.setState({
           data: res.data.data,
-          loading: false
+          loading: false,
+          pageTotal: res.data.total,
+          selectedRowKeys: []
         });
       } else {
         this.setState({
@@ -83,32 +97,99 @@ class OrderAssigned extends React.Component {
       }
     });
   }
-  handleTableChange(pagination) {
-    console.log('handleTableChange:', pagination);
-    this.request({
-      page: pagination.current,
-      pageSize: pagination.pageSize
+  onRowClick(record, index) {
+    API.getOrderDetailResource({ orderID: record.id }).then((res) => {
+      if (res.data.code === 200) {
+        this.setState({
+          ...this.state,
+          orderDetailData: {
+            ...this.state.orderDetailData,
+            ...res.data.data
+          }
+        });
+      } else {
+        message.error('获取订单详情失败！');
+      }
     });
   }
-  onChange(value) {
-    console.log('onchange', value);
+  handleTableChange(pagination) {
+    this.request({
+      page: pagination.current,
+      pageSize: pagination.pageSize,
+      orderID: this.state.queryKey
+    });
+  }
+  onSelectChange(selectedRowKeys) {
+    this.setState({
+      ...this.state,
+      selectedRowKeys
+    });
+  }
+  onShowSizeChange(current, size) {
+    this.setState({
+      ...this.state,
+      pagination: {
+        current,
+        pageSize: size
+      }
+    });
+  }
+  onPaginationChange(page, pageSize) {
+    this.setState({
+      ...this.state,
+      pagination: {
+        current: page,
+        pageSize
+      }
+    });
+  }
+  onSearch(value) {
+    this.setState({
+      ...this.state,
+      queryKey: value,
+      pagination: {
+        ...this.state.pagination,
+        current: 1
+      }
+    });
+    this.request({
+      orderID: value,
+      page: 1,
+      pageSize: this.state.pagination.pageSize
+    });
   }
   render() {
-    return (<div className="orderListnew">
-      <Row style={{ marginBottom: 12 }}>
-        <Col xs={12} sm={8} lg={4} style={{ marginRight: 12 }}>
-          <Search placeholder="请输入查询的收件人" onSearch={value => console.log(value)} />
-        </Col>
-      </Row>
+    const pagination = {
+      total: this.state.pageTotal,
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: this.state.pagination.current,
+      pageSize: this.state.pagination.pageSize,
+      onChange: this.onPaginationChange.bind(this),
+      onShowSizeChange: this.onShowSizeChange.bind(this)
+    };
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: this.onSelectChange.bind(this)
+    };
+    return (<div>
+      <div className="clearfix" style={{ marginBottom: 12 }}>
+        <div style={{ float: 'right', marginRight: 12 }}>
+          <Search placeholder="请输入快递单号" onSearch={this.onSearch.bind(this)} />
+        </div>
+      </div>
       <Table
         columns={columns}
         rowKey={record => record.id}
         dataSource={this.state.data}
-        pagination={this.state.pagination}
+        pagination={pagination}
         loading={this.state.loading}
         onChange={this.handleTableChange.bind(this)}
         scroll={{ x: 1500 }}
+        rowSelection={rowSelection}
+        onRowClick={this.onRowClick.bind(this)}
       />
+      <OrderDetail {...this.state.orderDetailData} />
     </div>);
   }
 }

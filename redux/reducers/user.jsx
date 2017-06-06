@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, RECIVE_DATA } from '../actions/actionstype.js';
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST, LOGOUT_SUCCESS, RECIVE_DATA, TOGGLE_ORDER_DETAIL } from '../actions/actionstype.js';
 
 
 const userReducer = (state = {
@@ -9,7 +9,8 @@ const userReducer = (state = {
   token: '',
   statusText: '',
   isAdmin: false,
-  userName: ''
+  userName: '',
+  showOrderDetail: false
 }, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
@@ -53,6 +54,11 @@ const userReducer = (state = {
       return {
         ...state,
         customData: action.payload
+      };
+    case TOGGLE_ORDER_DETAIL:
+      return {
+        ...state,
+        showOrderDetail: !state.showOrderDetail
       };
     default:
       return state;

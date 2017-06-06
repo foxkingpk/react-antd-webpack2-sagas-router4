@@ -9,6 +9,7 @@ class PrinterManager extends React.Component {
     this.state = { printer: '', checkMsg: '', checkCMsg: '' };
   }
   componentDidMount() {
+    document.title = '打印机管理';
     API.getDefaultPrinter().then((res) => {
       this.setState({
         printer: res.data.data.printer

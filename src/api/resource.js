@@ -20,7 +20,11 @@ const apiWX = {
   SaveUnassignOrder: '/api/saveUnassignOrder',
   DefaultSender: '/api/defaultSender',
   DelSender: '/api/delSender',
-  UpdateSender: '/api/updateSender'
+  UpdateSender: '/api/updateSender',
+  GetBackOrders: '/api/orderListBack',
+  UpdateOrdersExpressStatus: '/api/updateOrdersExpressStatus',
+  GetOrderDetail: '/api/getOrderDetail',
+  GetAllOrders: '/api/orderList'
 };
 
 const LoginResource = API_ROOT.concat(apiWX.Login);
@@ -42,6 +46,10 @@ const SaveUnassignOrderResource = API_ROOT.concat(apiWX.SaveUnassignOrder);
 const GetDefaultSenderResource = API_ROOT.concat(apiWX.DefaultSender);
 const DelSenderResource = API_ROOT.concat(apiWX.DelSender);
 const UpdateSenderResource = API_ROOT.concat(apiWX.UpdateSender);
+const GetBackOrdersResource = API_ROOT.concat(apiWX.GetBackOrders);
+const GetAllOrdersResource = API_ROOT.concat(apiWX.GetAllOrders);
+const UpdateOrdersExpressStatusResource = API_ROOT.concat(apiWX.UpdateOrdersExpressStatus);
+const GetOrderDetailResource = API_ROOT.concat(apiWX.GetOrderDetail);
 
 export {
   LoginResource,
@@ -62,5 +70,9 @@ export {
   SaveUnassignOrderResource,
   GetDefaultSenderResource,
   DelSenderResource,
-  UpdateSenderResource
+  UpdateSenderResource,
+  GetAllOrdersResource,
+  GetBackOrdersResource,
+  UpdateOrdersExpressStatusResource,
+  GetOrderDetailResource
 };

@@ -99,6 +99,7 @@ class SenderSetting extends React.Component {
     };
   }
   componentDidMount() {
+    document.title = '寄件人管理';
     this.getData();
   }
   getData() {
