@@ -1,27 +1,16 @@
 import React from 'react';
 import API from 'API';
 import { Table, Input, message, Button } from 'antd';
-import OrderDetail from './order-detail';
-import OrderVendorList from './order-vendor-list';
+import UserAdd from './user-add';
 
 const Search = Input.Search;
-
-class OrderUnassign extends React.Component {
+class Userlist extends React.Component {
   constructor() {
     super();
-    this.handleTableChange = this.handleTableChange.bind(this);
-    this.onPaginationChange = this.onPaginationChange.bind(this);
-    this.onShowSizeChange = this.onShowSizeChange.bind(this);
-    this.onSelectChange = this.onSelectChange.bind(this);
-    this.onSearch = this.onSearch.bind(this);
-    this.assignOrders = this.assignOrders.bind(this);
-    this.onRowClick = this.onRowClick.bind(this);
     this.state = {
       selectedRowKeys: [],
-      orderDetailData: null,
       pageTotal: 0,
       queryKey: '',
-      queryStatus: '',
       collapsed: false,
       orderID: null,
       pagination: {
@@ -33,6 +22,9 @@ class OrderUnassign extends React.Component {
       showModal: false,
       modalData: {
         confirmLoading: false,
+        orderSelectList: '',
+        title: '新建用户',
+        disableUserName: false,
         handleOk: (payload) => {
           this.setState({
             ...this.state,
@@ -42,7 +34,7 @@ class OrderUnassign extends React.Component {
             }
           });
 
-          API.saveUnassignOrderResource({ orderID: this.state.orderID, vendorID: payload[0] }).then((res) => {
+          API.savePrintOptionResource({ ...payload }).then((res) => {
             if (res.data.code === 200) {
               this.setState({
                 ...this.state,
@@ -52,7 +44,7 @@ class OrderUnassign extends React.Component {
                 }
               });
               this.hideDialog();
-              message.success('订单分配操作成功');
+              message.success('保存打印信息操作成功');
             } else {
               this.setState({
                 ...this.state,
@@ -62,22 +54,75 @@ class OrderUnassign extends React.Component {
                 }
               });
               this.hideDialog();
-              message.error('订单分配操作失败！');
+              message.error('保存打印信息操作失败！');
             }
           });
         },
         handleCancel: () => {
+            console.log("11111111111")
           this.hideDialog();
         }
       }
     };
+    this.addUser = this.addUser.bind(this);
+    this.delUser = this.delUser.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.editUser = this.editUser.bind(this);
+    this.onSelectChange = this.onSelectChange.bind(this);
+    this.handleTableChange = this.handleTableChange.bind(this);
+    this.onPaginationChange = this.onPaginationChange.bind(this);
+    this.onShowSizeChange = this.onShowSizeChange.bind(this);
   }
   componentDidMount() {
-    document.title = '未分配订单';
+    document.title = '用户列表';
     this.request({
       page: 1,
       pageSize: 10
     });
+  }
+  hideDialog() {
+    this.setState({
+      ...this.state,
+      showModal: false
+    });
+  }
+  addUser() {
+    this.setState({
+      ...this.state,
+      showModal: true,
+      modalData: {
+        ...this.state.modalData,
+        title: '新建用户',
+        disableUserName: false
+      }
+    });
+  }
+  delUser() {
+    if (this.state.selectedRowKeys.length < 1) {
+      message.error('请至少选择一项！');
+      return;
+    }
+  }
+  editUser() {
+    if (this.state.selectedRowKeys.length < 1) {
+      message.error('请至少选择一项！');
+      return;
+    }
+    this.setState({
+      ...this.state,
+      showModal: true,
+      modalData: {
+        ...this.state.modalData,
+        title: '编辑用户',
+        disableUserName: true
+      }
+    });
+  }
+  resetPassword() {
+    if (this.state.selectedRowKeys.length < 1) {
+      message.error('请至少选择一项！');
+      return;
+    }
   }
   onShowSizeChange(current, size) {
     this.setState({
@@ -95,50 +140,6 @@ class OrderUnassign extends React.Component {
         current: page,
         pageSize
       }
-    });
-  }
-  assignOrders() {
-    console.log(this.state.selectedRowKeys.length);
-    if (this.state.selectedRowKeys.length > 1) {
-      message.error('该功能不支持批量操作！');
-      return;
-    }
-    this.setState({
-      ...this.state,
-      orderID: this.state.selectedRowKeys,
-      showModal: true
-    });
-  }
-  onSearch(value) {
-    this.setState({
-      ...this.state,
-      queryKey: value,
-      pagination: {
-        ...this.state.pagination,
-        current: 1
-      }
-    });
-    this.request({
-      unassignStatus: this.state.queryStatus,
-      unassignKey: value,
-      page: 1,
-      pageSize: this.state.pagination.pageSize
-    });
-  }
-  onChange(value) {
-    this.setState({
-      ...this.state,
-      queryStatus: value,
-      pagination: {
-        ...this.state.pagination,
-        current: 1
-      }
-    });
-    this.request({
-      unassignStatus: value,
-      unassignKey: this.state.queryKey,
-      page: 1,
-      pageSize: this.state.pagination.pageSize
     });
   }
   request(payload) {
@@ -160,14 +161,7 @@ class OrderUnassign extends React.Component {
     this.request({
       page: pagination.current,
       pageSize: pagination.pageSize,
-      unassignStatus: this.state.queryStatus,
-      unassignKey: this.state.queryKey
-    });
-  }
-  hideDialog() {
-    this.setState({
-      ...this.state,
-      showModal: false
+      userQuery: this.state.queryKey
     });
   }
   onSelectChange(selectedRowKeys) {
@@ -175,19 +169,6 @@ class OrderUnassign extends React.Component {
     this.setState({
       ...this.state,
       selectedRowKeys
-    });
-  }
-  onRowClick(record) {
-    API.getOrderDetailResource({ orderID: record.id }).then((res) => {
-      console.log(res.data.data);
-      if (res.data.code === 200) {
-        this.setState({
-          ...this.state,
-          orderDetailData: res.data.data
-        });
-      } else {
-        message.error('订单分配操作失败！');
-      }
     });
   }
   render() {
@@ -204,42 +185,27 @@ class OrderUnassign extends React.Component {
       title: '编号',
       key: 'id',
       dataIndex: 'id',
-      width: 50
+      width: 20
     }, {
-      title: '宝贝名称',
-      key: 'goodsName',
-      dataIndex: 'goodsName',
-      width: 200
-    }, {
-      title: '订单编号',
-      key: 'orderID',
-      dataIndex: 'orderID',
+      title: '用户名',
+      key: 'userName',
+      dataIndex: 'userName',
       width: 80
     }, {
-      title: '买家昵称',
-      key: 'nickname',
-      dataIndex: 'nickname',
+      title: '手机号',
+      key: 'phone',
+      dataIndex: 'phone',
       width: 80
     }, {
-      title: '订单时间',
-      key: 'time',
-      dataIndex: 'time',
+      title: '联系人',
+      key: 'contact',
+      dataIndex: 'contact',
       width: 80
     }, {
-      title: '街道地址',
-      key: 'address',
-      dataIndex: 'address',
-      width: 150
-    }, {
-      title: '快递公司',
-      key: 'express',
-      dataIndex: 'express',
-      width: 80
-    }, {
-      title: '订单分配状态',
-      key: 'assign',
-      dataIndex: 'assign',
-      width: 80
+      title: '库位',
+      key: 'whareHouse',
+      dataIndex: 'wareHouse',
+      width: 100
     }];
     const rowSelection = {
       selectedRowKeys: this.state.selectedRowKeys,
@@ -248,10 +214,13 @@ class OrderUnassign extends React.Component {
     return (<div>
       <div className="clearfix" style={{ marginBottom: 12 }}>
         <div style={{ float: 'right', marginRight: 12 }}>
-          <Search placeholder="请输入查询的收件人" onSearch={this.onSearch} />
+          <Search placeholder="请输入用户名查询" onSearch={this.onSearch} />
         </div>
         <div style={{ float: 'left', display: 'flex' }}>
-          <Button type="primary" icon="download" style={{ margin: '0 5px' }} onClick={this.assignOrders}>分配订单</Button>
+          <Button type="primary" icon="user-add" style={{ margin: '0 5px' }} onClick={this.addUser}>添加用户</Button>
+          <Button type="primary" icon="user-delete" style={{ margin: '0 5px' }} onClick={this.delUser}>删除用户</Button>
+          <Button type="primary" icon="edit" style={{ margin: '0 5px' }} onClick={this.editUser}>编辑用户</Button>
+          <Button type="primary" icon="reload" style={{ margin: '0 5px' }} onClick={this.resetPassword}>重置密码</Button>
         </div>
       </div>
       <Table
@@ -262,13 +231,10 @@ class OrderUnassign extends React.Component {
         loading={this.state.loading}
         onChange={this.handleTableChange}
         rowSelection={rowSelection}
-        scroll={{ x: 1500 }}
-        onRowClick={this.onRowClick}
       />
-      <OrderDetail {...this.state.orderDetailData} />
-      { this.state.showModal ? <OrderVendorList data={this.state.modalData} /> : '' }
+      { this.state.showModal ? <UserAdd data={this.state.modalData} /> : '' }
     </div>);
   }
 }
 
-export default OrderUnassign;
+export default Userlist;

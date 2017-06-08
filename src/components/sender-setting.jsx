@@ -168,18 +168,21 @@ class SenderSetting extends React.Component {
       title: '您确定将删除该寄件人信息?',
       onOk: () => {
         API.delSenderResource({ id: item.id }).then((res) => {
-          message.success('删除寄件人信息操作成功！');
-          this.getData();
+          if (res.data.code === 200) {
+            message.success('删除寄件人信息操作成功！');
+            this.getData();
+          } else {
+            message.error('删除寄件人信息操作失败！');
+          }
         });
       }
     });
-
   }
   render() {
     const listItems = this.state.datas.map((item, index) =>
-      <li style={{ float: 'left', margin: '10px' }} key={index}>
+      (<li style={{ float: 'left', margin: '10px' }} key={index}>
         <SenderItem props={item} editSenderDlg={this.editSenderDlg.bind(this, item)} delDlg={this.delDlg.bind(this, item)} />
-      </li>
+      </li>)
     );
 
     return (<div>

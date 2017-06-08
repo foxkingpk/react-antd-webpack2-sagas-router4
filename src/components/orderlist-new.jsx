@@ -67,6 +67,7 @@ class OrderListNew extends React.Component {
       showModal: false,
       modalData: {
         confirmLoading: false,
+        orderSelectList: '',
         handleOk: (payload) => {
           this.setState({
             ...this.state,
@@ -104,7 +105,7 @@ class OrderListNew extends React.Component {
           this.hideDialog();
         },
         handlePreview: () => {
-          this.startPrint() ? this.hideDialog() : '';
+          this.startPrint();
         }
       }
     };
@@ -135,11 +136,11 @@ class OrderListNew extends React.Component {
     this.setState({
       ...this.state,
       orderID: this.state.selectedRowKeys,
+      orderSelectList: this.state.selectedRowKeys.join(),
       showModal: true
     });
   }
   startPrint() {
-    let result = false;
     if (!mLODOP.getMLodop()) {
       notification.error({
         message: '错误提示',
@@ -185,7 +186,6 @@ class OrderListNew extends React.Component {
         console.log(reason);
       });
     }
-    return result;
   }
   onBackOrderItem() {
     API.updateOrderVendorResource({ id: this.state.selectedRowKeys.join() }).then((res) => {

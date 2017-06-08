@@ -12,7 +12,9 @@ class OrderList extends React.Component {
     super();
     this.state = {
       selectedRowKeys: [],
-      orderDetailData: null,
+      orderDetailData: {
+        disableEdit: true
+      },
       queryKey: '',
       queryStatus: '',
       collapsed: false,
@@ -26,6 +28,7 @@ class OrderList extends React.Component {
       loading: false,
       modalData: {
         confirmLoading: false,
+        orderSelectList: '',
         handleOk: (payload) => {
           this.setState({
             ...this.state,
@@ -35,7 +38,7 @@ class OrderList extends React.Component {
             }
           });
 
-          API.saveUnassignOrderResource({ orderID: this.state.orderID, vendorID: payload[0] }).then((res) => {
+          API.savePrintOptionResource({ ...payload }).then((res) => {
             if (res.data.code === 200) {
               this.setState({
                 ...this.state,
@@ -45,7 +48,7 @@ class OrderList extends React.Component {
                 }
               });
               this.hideDialog();
-              message.success('订单分配操作成功');
+              message.success('保存打印信息操作成功');
             } else {
               this.setState({
                 ...this.state,
@@ -55,15 +58,38 @@ class OrderList extends React.Component {
                 }
               });
               this.hideDialog();
-              message.error('订单分配操作失败！');
+              message.error('保存打印信息操作失败！');
             }
           });
         },
         handleCancel: () => {
           this.hideDialog();
         },
-        handlePreview: () => {
-          this.startPrint() ? this.hideDialog() : '';
+        handlePreview: (payload) => {
+          API.savePrintOptionResource({ ...payload }).then((res) => {
+            if (res.data.code === 200) {
+              this.setState({
+                ...this.state,
+                modalData: {
+                  ...this.state.modalData,
+                  confirmLoading: false
+                }
+              });
+              this.hideDialog();
+              this.startPrint();
+              message.success('保存打印信息操作成功');
+            } else {
+              this.setState({
+                ...this.state,
+                modalData: {
+                  ...this.state.modalData,
+                  confirmLoading: false
+                }
+              });
+              this.hideDialog();
+              message.error('保存打印信息操作失败！');
+            }
+          });
         }
       }
     };
@@ -112,11 +138,14 @@ class OrderList extends React.Component {
     this.setState({
       ...this.state,
       orderID: this.state.selectedRowKeys,
+      modalData: {
+        ...this.state.modalData,
+        orderSelectList: this.state.selectedRowKeys.join()
+      },
       showModal: true
     });
   }
   startPrint() {
-    let result = false;
     if (!mLODOP.getMLodop()) {
       notification.error({
         message: '错误提示',
@@ -162,7 +191,6 @@ class OrderList extends React.Component {
         console.log(reason);
       });
     }
-    return result;
   }
   onSearch(value) {
     this.setState({
@@ -215,7 +243,10 @@ class OrderList extends React.Component {
       if (res.data.code === 200) {
         this.setState({
           ...this.state,
-          orderDetailData: res.data.data
+          orderDetailData: {
+            ...this.state.orderDetailData,
+            ...res.data.data
+          }
         });
       } else {
         message.error('订单分配操作失败！');

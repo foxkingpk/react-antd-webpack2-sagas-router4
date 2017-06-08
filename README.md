@@ -15,8 +15,8 @@
 ## 启动
 运行`cnpm run dev`，正常情况下，会在默认浏览器中打开网址`http://localhost:9110`.
 
-## 数据模拟（Mockjs)
-使用`mockjs`来模拟demo需要获取的数据，其实现主要在`mockjs`目录，其用法参考[mockjs官网](http://mockjs.com/)
+## RAP
+使用`RAP`来模拟demo需要获取的数据，其用法参考[RAP官网](http://rapapi.org/platform/home.do)
 
 ## antd
 蚂蚁金服出品，非常棒的UI库，使用起来还是挺方便的，其用法参考[antdesign官网](https://ant.design/index-cn)
@@ -28,6 +28,14 @@
 `redux-saga`
 
 [中文文档](http://leonshi.com/redux-saga-in-chinese/index.html)
+
 ## 打包部署
 运行`cnpm run build`，将资源打包输出到`dist`目录。
+## 编译、运行问题
+1. 如果编译出现，请删除node_modules目录，重新cnpm install再试。因为有些版本更新了依赖包，需要安装
+2. 如果启动时浏览器里面报错，有可能是在目录redux/store/index.js文件中启用了`REDUX`谷歌插件导致
+  `const store = createStore(reducers, compose(applyMiddleware(sagaMiddleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()));`
+  屏蔽上面这句话，修改为：
+  `const store = createStore(reducers, applyMiddleware(sagaMiddleware));`
+3. 最新版本中，根据业务需求把主页dashboard屏蔽，如果需要可使用6月6号之前的版本
 

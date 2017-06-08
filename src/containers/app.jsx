@@ -132,6 +132,11 @@ class App extends React.Component {
                 <Link to="/orders/orderAssigned">已分配订单</Link>
               </Menu.Item>
             </SubMenu> : ''}
+            { this.props.isAdmin ? <SubMenu key="user" title={<span><Icon type="user" /><span className="nav-text">用户管理</span></span>}>
+              <Menu.Item key="userList">
+                <Link to="/user/userList">分配用户</Link>
+              </Menu.Item>
+            </SubMenu> : ''}
             {this.props.isAdmin ? '' : <SubMenu key="express" title={<span><Icon type="schedule" /><span className="nav-text" style={{ marginLeft: 5 }}>订单派送</span></span>}>
           
               <SubMenu key="msgOrder" title="未发货订单">
@@ -187,10 +192,10 @@ class App extends React.Component {
           <Content style={{ padding: '24px', overflow: 'initial' }}>
             <div style={{ background: '#fff', minHeight: 'calc(100vh - 190px)', color: 'green', padding: '24px' }}>
               {this.props.children}
-              {/*<div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
+              <div style={{ fontSize: 30, padding: '100 0', textAlign: 'center' }}>
                 <h3>数据：{this.props.customData ? this.props.customData.data.payload.orderstate : '无数据' }</h3>
                 <Button onClick={this.send.bind(this)}>saga异步获取数据</Button>
-              </div>*/}
+              </div>
             </div>
             <div style={{ padding: '0 20' }}>
               <Modal

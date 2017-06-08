@@ -6,7 +6,13 @@ import mLODOP from 'UTILS/print.js';
 class PrinterManager extends React.Component {
   constructor() {
     super();
-    this.state = { printer: '', checkMsg: '', checkCMsg: '' };
+    this.checkIsInstall = this.checkIsInstall.bind(this);
+    this.changeDefaultPrinter = this.changeDefaultPrinter.bind(this);
+    this.state = {
+      printer: '',
+      checkMsg: '',
+      checkCMsg: ''
+    };
   }
   componentDidMount() {
     document.title = '打印机管理';
@@ -15,9 +21,9 @@ class PrinterManager extends React.Component {
         printer: res.data.data.printer
       });
     });
-    if (mLODOP.getMLodop()) {
-      LODOP.Create_Printer_List(document.getElementById('printerChoose'));
-    }
+    // if (mLODOP.getMLodop()) {
+    //   LODOP.Create_Printer_List(document.getElementById('printerChoose'));
+    // }
   }
   changeDefaultPrinter() {
     API.changeDefaultPrinter().then((res) => {
@@ -59,18 +65,18 @@ class PrinterManager extends React.Component {
   render() {
     return (<div>
       <div style={{ fontSize: 20, margin: '20px 0', color: '#000' }}>
-        <h3>打印机管理</h3>
+        <h3>打印机检测</h3>
         <ul className="clearfix">
-          <li style={{ float: 'left', margin: '10px' }} key="default">
-            <Card className="senderItem" title="修改默认打印机" extra={<a href="javascript:;" onClick={this.changeDefaultPrinter.bind(this)}>修改</a>} style={{ width: 300, height: 210 }}>
+          {/*<li style={{ float: 'left', margin: '10px' }} key="default">
+            <Card className="senderItem" title="修改默认打印机" extra={<a href="javascript:;" onClick={this.changeDefaultPrinter}>修改</a>} style={{ width: 300, height: 210 }}>
               <p>当前设置的默认打印机是:</p>
               <p style={{ margin: '8px 20px' }}>{this.state.printer}</p>
               <select id="printerChoose" className="ant-select ant-select-selection ant-select-selection--single" defaultValue="请选择打印机" style={{ display: 'inline-block', width: 220, marginTop: 8 }}>
               </select>
             </Card>
-          </li>
+          </li>*/}
           <li style={{ float: 'left', margin: '10px' }} key="check">
-            <Card className="senderItem" title="检测打印插件是否安装" extra={<a href="javascript:;" onClick={this.checkIsInstall.bind(this)}>检测</a>} style={{ width: 300, height: 210 }}>
+            <Card className="senderItem" title="检测打印插件是否安装" extra={<a href="javascript:;" onClick={this.checkIsInstall}>检测</a>} style={{ width: 300, height: 210 }}>
               <p style={{ fontSize: 14 }}>{this.state.checkMsg}</p>
               <p style={{ fontSize: 14, marginTop: 14 }}>{this.state.checkCMsg}</p>
             </Card>

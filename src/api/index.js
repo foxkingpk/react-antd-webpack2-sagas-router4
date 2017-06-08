@@ -22,7 +22,10 @@ import {
   UpdateOrdersExpressStatusResource,
   GetOrderDetailResource,
   GetAllOrdersResource,
-  GetBackOrdersResource
+  GetBackOrdersResource,
+  SavePrintOptionResource,
+  GetPrintOptionResource,
+  GetPrintOrderListResource
 } from './resource.js';
 
 export default {
@@ -81,7 +84,7 @@ export default {
     return HTTP.Post(UpdateSenderResource, payload);
   },
   updateOrdersExpressStatusResource(payload) {
-    return HTTP.Get(UpdateOrdersExpressStatusResource, payload);
+    return HTTP.Post(UpdateOrdersExpressStatusResource, payload);
   },
   getOrderDetailResource(payload) {
     return HTTP.Get(GetOrderDetailResource, payload);
@@ -91,6 +94,15 @@ export default {
   },
   getBackOrdersResource(payload) {
     return HTTP.Get(GetBackOrdersResource, payload);
+  },
+  savePrintOptionResource(payload) {
+    return HTTP.Post(SavePrintOptionResource, payload);
+  },
+  getPrintOptionResource(payload) {
+    return HTTP.Get(GetPrintOptionResource, payload);
+  },
+  getPrintOrderListResource(payload) {
+    return HTTP.Get(GetPrintOrderListResource, payload);
   },
   getOrderState() {
     return HTTP.Get(OrderStateResource);

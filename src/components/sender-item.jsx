@@ -9,9 +9,9 @@ const SenderItem = ({ props, editSenderDlg, delDlg }) => {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   };
-  const title= <Badge count={props.default ? '默认' : ''}>
-      <span style={{ fontSize: 18 }}> {props.sendName} </span>
-    </Badge>;
+  const title = (<Badge count={props.default ? '默认' : ''}>
+    <span style={{ fontSize: 18 }}> {props.sendName} </span>
+  </Badge>);
   return (<Card className="senderItem" title={title} extra={<div><a href="javascript:;" onClick={editSenderDlg}>编辑</a><a href="javascript:;" onClick={delDlg} style={{ marginLeft: 8, color: 'red' }}>删除</a></div>} style={{ width: 300, height: 210 }}>
     <p style={style}>所在地：{props.sendcity[0]}{props.sendcity[1]}{props.sendcity[2]}</p>
     <p style={style}>街道地址：{props.sendaddr}</p>
@@ -23,13 +23,9 @@ const SenderItem = ({ props, editSenderDlg, delDlg }) => {
 };
 
 SenderItem.propTypes = {
-  sendName: PropTypes.string,
-  sendcity: PropTypes.array,
-  sendaddr: PropTypes.string,
-  sendcompany: PropTypes.string,
-  sendmobile: PropTypes.number,
-  sendtel: PropTypes.string,
-  sendzipcode: PropTypes.number,
-  default: PropTypes.bool
+  props: PropTypes.object.isRequired,
+  editSenderDlg: PropTypes.func.isRequired,
+  delDlg: PropTypes.func.isRequired
 };
+
 export default SenderItem;

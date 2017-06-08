@@ -8,9 +8,10 @@ const FormItem = Form.Item;
 class SenderEdit extends React.Component {
   constructor(props) {
     super(props);
-  } 
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
   handleSubmit() {
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err) => {
       if (!err) {
         this.props.data.handleOk(this.props.form.getFieldsValue());
       }
@@ -36,7 +37,7 @@ class SenderEdit extends React.Component {
     };
 
     return (<Modal
-      visible={true}
+      visible
       style={{ top: '50%', marginTop: '-290px' }}
       title={this.props.data.title}
       onOk={this.props.data.handleOk}
@@ -48,8 +49,11 @@ class SenderEdit extends React.Component {
         取消
         </Button>,
         <Button
-          key="submit" type="primary" size="large" loading={this.props.data.confirmLoading}
-          onClick={this.handleSubmit.bind(this)}
+          key="submit"
+          type="primary"
+          size="large"
+          loading={this.props.data.confirmLoading}
+          onClick={this.handleSubmit}
         >
           确定
         </Button>
@@ -136,6 +140,7 @@ class SenderEdit extends React.Component {
 }
 
 SenderEdit.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object.isRequired
 };
+
 export default Form.create()(SenderEdit);

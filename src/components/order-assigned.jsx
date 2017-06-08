@@ -97,7 +97,7 @@ class OrderAssigned extends React.Component {
       }
     });
   }
-  onRowClick(record, index) {
+  onRowClick(record) {
     API.getOrderDetailResource({ orderID: record.id }).then((res) => {
       if (res.data.code === 200) {
         this.setState({

@@ -15,10 +15,10 @@ class OrderVendorList extends React.Component {
   }
   componentDidMount() {
     this.request();
-  }  
+  }
   onSelectChange(selectedRowKeys, selectedRows) {
     console.log(selectedRowKeys, selectedRows);
-    this.setState({ 
+    this.setState({
       ...this.state,
       selectedRowKeys
     });
@@ -67,8 +67,8 @@ class OrderVendorList extends React.Component {
     }];
 
     return (<Modal
-      visible={true}
-      style={{ top: '50%', marginTop: '-377px' }}
+      visible
+      style={{ top: '50%', marginTop: '-289px' }}
       title="选择订单分配商家"
       onOk={this.handleOk.bind(this)}
       onCancel={this.props.data.handleCancel}
@@ -79,7 +79,10 @@ class OrderVendorList extends React.Component {
         取消
         </Button>,
         <Button
-          key="submit" type="primary" size="large" loading={this.props.data.confirmLoading}
+          key="submit"
+          type="primary"
+          size="large"
+          loading={this.props.data.confirmLoading}
           onClick={this.handleOk.bind(this)}
         >
           确定
@@ -99,6 +102,6 @@ class OrderVendorList extends React.Component {
   }
 }
 OrderVendorList.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object.isRequired
 };
 export default OrderVendorList;

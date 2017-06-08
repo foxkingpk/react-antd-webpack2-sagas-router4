@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Dashboard from 'CONTAINERS/Dashboard';
 import Orders from 'CONTAINERS/orders';
+import UserManger from 'CONTAINERS/usermanager';
 import Express from 'CONTAINERS/express';
 import Print from 'CONTAINERS/print';
 import Login from 'COMPONENTS/login';
@@ -23,6 +24,7 @@ ReactDOM.render(
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/" component={Dashboard} />
           <Route path="/orders" component={Orders} />
+          <Route path="/user" component={UserManger} />
           <Route path="/express" component={Express} />
           <Route path="/print" component={Print} />
           <Route component={NoMatch} />

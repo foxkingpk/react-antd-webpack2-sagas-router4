@@ -23,8 +23,11 @@ const apiWX = {
   UpdateSender: '/api/updateSender',
   GetBackOrders: '/api/orderListBack',
   UpdateOrdersExpressStatus: '/api/updateOrdersExpressStatus',
-  GetOrderDetail: '/api/getOrderDetail',
-  GetAllOrders: '/api/orderList'
+  GetOrderDetail: '/api/orderDetail',
+  GetAllOrders: '/api/orderList',
+  GetPrintOrderList: '/api/printOrderList',
+  GetPrintOption: '/api/printOption',
+  SavePrintOption: '/api/savePrintOption'
 };
 
 const LoginResource = API_ROOT.concat(apiWX.Login);
@@ -50,6 +53,9 @@ const GetBackOrdersResource = API_ROOT.concat(apiWX.GetBackOrders);
 const GetAllOrdersResource = API_ROOT.concat(apiWX.GetAllOrders);
 const UpdateOrdersExpressStatusResource = API_ROOT.concat(apiWX.UpdateOrdersExpressStatus);
 const GetOrderDetailResource = API_ROOT.concat(apiWX.GetOrderDetail);
+const SavePrintOptionResource = API_ROOT.concat(apiWX.SavePrintOption);
+const GetPrintOptionResource = API_ROOT.concat(apiWX.GetPrintOption);
+const GetPrintOrderListResource = API_ROOT.concat(apiWX.GetPrintOrderList);
 
 export {
   LoginResource,
@@ -74,5 +80,8 @@ export {
   GetAllOrdersResource,
   GetBackOrdersResource,
   UpdateOrdersExpressStatusResource,
-  GetOrderDetailResource
+  GetOrderDetailResource,
+  SavePrintOptionResource,
+  GetPrintOptionResource,
+  GetPrintOrderListResource
 };

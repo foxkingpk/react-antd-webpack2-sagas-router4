@@ -240,10 +240,10 @@ class OrderDetail extends React.Component {
                             initialValue: this.props.sender
                           })(
                             <Select disabled={this.props.disableEdit} >
-                              {this.state.senderList.map(item =>
+                              {this.state.senderList.map(item => (
                                 <Option key={item.id} value={item.sendName}>
                                   {item.sendName}
-                                </Option>
+                                </Option>)
                               )}
                             </Select>
                           )}
@@ -368,26 +368,46 @@ class OrderDetail extends React.Component {
   }
 }
 OrderDetail.propTypes = {
-  sellerMsg: PropTypes.string,
-  buyerNickName: PropTypes.string,
-  buyerAliPay: PropTypes.string,
-  buyerEmail: PropTypes.string,
+  sellerMsg: PropTypes.string.isRequired,
+  buyerNickName: PropTypes.string.isRequired,
+  buyerAliPay: PropTypes.string.isRequired,
+  buyerEmail: PropTypes.string.isRequired,
   orderNum: PropTypes.number,
   tradeTime: PropTypes.string,
   tradeNum: PropTypes.number,
-  express: PropTypes.string,
+  express: PropTypes.string.isRequired,
   expressnumbers: PropTypes.number,
-  receiver: PropTypes.string,
-  sender: PropTypes.string,
-  sendName: PropTypes.string,
-  city: PropTypes.array,
-  address: PropTypes.string,
-  company: PropTypes.string,
+  receiver: PropTypes.string.isRequired,
+  sender: PropTypes.string.isRequired,
+  city: PropTypes.array.isRequired,
+  address: PropTypes.string.isRequired,
+  company: PropTypes.string.isRequired,
   phone: PropTypes.number,
-  tel: PropTypes.string,
+  tel: PropTypes.string.isRequired,
   zipcode: PropTypes.number,
-  invoice: PropTypes.string,
-  disableEdit: PropTypes.bool
+  invoice: PropTypes.string.isRequired,
+  disableEdit: PropTypes.bool.isRequired
+};
+OrderDetail.defaultProps = {
+  sellerMsg: '',
+  buyerNickName: '',
+  buyerAliPay: '',
+  buyerEmail: '',
+  orderNum: null,
+  tradeTime: null,
+  tradeNum: null,
+  express: '',
+  expressnumbers: null,
+  receiver: '',
+  sender: '',
+  city: [],
+  address: '',
+  company: '',
+  phone: null,
+  tel: '',
+  zipcode: null,
+  invoice: '',
+  disableEdit: false
 };
 function mapStateToProp(state) {
   return {
