@@ -358,6 +358,26 @@ class OrderDetail extends React.Component {
                 </Row>
               </div>
             </TabPane>
+            { this.props.isAdmin ? <TabPane tab="回访信息" key="3">
+              <div className="express">
+                <Row>
+                  <Col className="item" span={24}>
+                    <div className="item-detail">
+                      <div className="title">回访备注</div>
+                      <div className="content">
+                        <FormItem>
+                          {getFieldDecorator('returnVisitMsg', {
+                            initialValue: this.props.returnVisitMsg
+                          })(
+                            <textarea className="sellerMsg" rows="3" cols="20" disabled={this.props.disableEdit} />
+                          )}
+                        </FormItem>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </TabPane> : ''}
           </Tabs>
         </Form>
         <div className="clearfix" style={{ paddingTop: 10 }}>
@@ -411,7 +431,8 @@ OrderDetail.defaultProps = {
 };
 function mapStateToProp(state) {
   return {
-    showOrderDetail: state.userReducer.showOrderDetail
+    showOrderDetail: state.userReducer.showOrderDetail,
+    isAdmin: state.userReducer.isAdmin
   };
 }
 function mapDispatchToProp(dispatch) {

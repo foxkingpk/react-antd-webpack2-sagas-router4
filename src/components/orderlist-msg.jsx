@@ -332,6 +332,7 @@ class MsgOrderList extends React.Component {
       total: this.state.pageTotal,
       showSizeChanger: true,
       showQuickJumper: true,
+      pageSizeOptions: ['10', '20', '30', '40', '100'],
       current: this.state.pagination.current,
       pageSize: this.state.pagination.pageSize,
       onChange: this.onPaginationChange,

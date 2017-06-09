@@ -1,54 +1,14 @@
 import React from 'react';
 import API from 'API';
-import { Table, message, Button, Input, notification } from 'antd';
-
+import { Table, Input, message, Button, notification } from 'antd';
 import mLODOP from 'UTILS/print.js';
 import OrderDetail from './order-detail';
 import OrderPrintPreview from './order-print-preview';
+import {getUrlPara} from 'UTILS/index';
 
 const Search = Input.Search;
-const columns = [{
-  title: '编号',
-  key: 'id',
-  dataIndex: 'id'
-}, {
-  title: '宝贝名称',
-  key: 'goodsName',
-  dataIndex: 'goodsName'
-}, {
-  title: '订单编号',
-  key: 'orderID',
-  dataIndex: 'orderID'
-}, {
-  title: '买家昵称',
-  key: 'nickname',
-  dataIndex: 'nickname'
-}, {
-  title: '收件人',
-  key: 'reciver',
-  dataIndex: 'reciver'
-}, {
-  title: '手机号',
-  key: 'phone',
-  dataIndex: 'phone'
-}, {
-  title: '发货时间',
-  key: 'sendTime',
-  dataIndex: 'sendTime'
-}, {
-  title: '街道地址',
-  key: 'address',
-  dataIndex: 'address'
-}, {
-  title: '快递',
-  key: 'express',
-  dataIndex: 'express',
-  width: 100,
-  fixed: 'right'
-}];
 
-
-class OrderListFinish extends React.Component {
+class OrdersBack extends React.Component {
   constructor() {
     super();
     this.handleTableChange = this.handleTableChange.bind(this);
@@ -58,20 +18,22 @@ class OrderListFinish extends React.Component {
     this.onSearch = this.onSearch.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
     this.printOrder = this.printOrder.bind(this);
-    this.orderBack = this.orderBack.bind(this);
     this.state = {
+      selectedRowKeys: [],
+      orderDetailData: {
+        disableEdit: true
+      },
+      queryKey: '',
+      queryStatus: '',
+      collapsed: false,
+      orderID: null,
+      pageTotal: 0,
       pagination: {
         current: 1,
         pageSize: 10
       },
       data: [],
-      selectedRowKeys: [],
       loading: false,
-      orderDetailData: {
-        disableEdit: true
-      },
-      pageTotal: 0,
-      showModal: false,
       modalData: {
         confirmLoading: false,
         orderSelectList: '',
@@ -141,64 +103,10 @@ class OrderListFinish extends React.Component {
     };
   }
   componentDidMount() {
-    document.title = '已发货订单';
+    document.title = '退货订单';
     this.request({
       page: 1,
       pageSize: 10
-    });
-  }
-  onRowClick(record, index) {
-    console.log(record,index);
-    API.getOrderDetailResource({ orderID: record.id }).then((res) => {
-      console.log(res.data);
-      if (res.data.code === 200) {
-        this.setState({
-          ...this.state,
-          orderDetailData: {
-            ...this.state.orderDetailData,
-            ...res.data.data
-          }
-        });
-      } else {
-        message.error('获取订单详情失败！');
-      }
-    });
-  }
-  request(payload) {
-    this.setState({
-      loading: true
-    });
-
-    API.getOrderListFinishResource(payload).then((res) => {
-      if (res.data.code === 200) {
-        this.setState({
-          data: res.data.data,
-          selectedRowKeys: [],
-          pageTotal: res.data.total,
-          loading: false
-        });
-      } else {
-        message.error('获取已发货订单信息失败！');
-        this.setState({
-          data: [],
-          loading: false
-        });
-      }
-    });
-  }
-  handleTableChange(pagination) {
-    console.log('handleTableChange:', pagination);
-    this.request({
-      page: pagination.current,
-      pageSize: pagination.pageSize,
-      orderID: this.state.queryKey
-    });
-  }
-  onSelectChange(selectedRowKeys) {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({
-      ...this.state,
-      selectedRowKeys
     });
   }
   onShowSizeChange(current, size) {
@@ -216,34 +124,6 @@ class OrderListFinish extends React.Component {
       pagination: {
         current: page,
         pageSize
-      }
-    });
-  }
-  onSearch(value) {
-    this.setState({
-      ...this.state,
-      queryKey: value,
-      pagination: {
-        ...this.state.pagination,
-        current: 1
-      }
-    });
-    this.request({
-      orderID: value,
-      page: 1,
-      pageSize: this.state.pagination.pageSize
-    });
-  }
-  orderBack() {
-    if (this.state.selectedRowKeys.length === 0) {
-      message.error('请先选择回访的快递订单！');
-      return;
-    }
-    API.updateOrderBackResource({ id: this.state.selectedRowKeys.join() }).then((res) => {
-      if (res.data.code === 200) {
-        message.success('批量回访操作成功！');
-      } else {
-        message.error('批量回访操作失败！');
       }
     });
   }
@@ -320,11 +200,68 @@ class OrderListFinish extends React.Component {
       });
     }
   }
+  onSearch(value) {
+    this.setState({
+      ...this.state,
+      queryKey: value,
+      pagination: {
+        ...this.state.pagination,
+        current: 1
+      }
+    });
+    this.request({
+      orderID: value,
+      page: 1,
+      pageSize: this.state.pagination.pageSize
+    });
+  }
+  request(payload) {
+    this.setState({
+      loading: true
+    });
+
+    API.getBackOrdersResource(payload).then((res) => {
+      this.setState({
+        ...this.state,
+        selectedRowKeys: [],
+        data: res.data.data,
+        loading: false,
+        pageTotal: res.data.total
+      });
+    });
+  }
+  handleTableChange(pagination) {
+    this.request({
+      page: pagination.current,
+      pageSize: pagination.pageSize,
+      orderID: this.state.queryKey
+    });
+  }
+  onSelectChange(selectedRowKeys) {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({
+      ...this.state,
+      selectedRowKeys
+    });
+  }
+  onRowClick(record) {
+    API.getOrderDetailResource({ orderID: record.id }).then((res) => {
+      console.log(res.data.data);
+      if (res.data.code === 200) {
+        this.setState({
+          ...this.state,
+          pageTotal: res.data.total,
+          orderDetailData: {
+            ...this.state.orderDetailData,
+            ...res.data.data
+          }
+        });
+      } else {
+        message.error('订单分配操作失败！');
+      }
+    });
+  }
   render() {
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: this.onSelectChange
-    };
     const pagination = {
       total: this.state.pageTotal,
       showSizeChanger: true,
@@ -335,14 +272,53 @@ class OrderListFinish extends React.Component {
       onChange: this.onPaginationChange,
       onShowSizeChange: this.onShowSizeChange
     };
-    return (<div className="orderListFinish">
+    const columns = [{
+      title: '编号',
+      key: 'id',
+      dataIndex: 'id',
+      width: 50
+    }, {
+      title: '宝贝名称',
+      key: 'goodsName',
+      dataIndex: 'goodsName',
+      width: 200
+    }, {
+      title: '订单编号',
+      key: 'orderID',
+      dataIndex: 'orderID',
+      width: 80
+    }, {
+      title: '买家昵称',
+      key: 'nickname',
+      dataIndex: 'nickname',
+      width: 80
+    }, {
+      title: '订单时间',
+      key: 'time',
+      dataIndex: 'time',
+      width: 80
+    }, {
+      title: '街道地址',
+      key: 'address',
+      dataIndex: 'address',
+      width: 150
+    }, {
+      title: '快递公司',
+      key: 'express',
+      dataIndex: 'express',
+      width: 80
+    }];
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedRowKeys,
+      onChange: this.onSelectChange
+    };
+    return (<div className="orderListBack">
       <div className="clearfix" style={{ marginBottom: 12 }}>
         <div style={{ float: 'right', marginRight: 12 }}>
           <Search placeholder="请输入快递单号" onSearch={this.onSearch} />
         </div>
         <div style={{ float: 'left', display: 'flex' }}>
-          <Button type="primary" icon="printer" style={{ margin: '0 5px' }} onClick={this.printOrder}>打印订单</Button>
-          <Button type="primary" icon="rollback" style={{ margin: '0 5px' }} onClick={this.orderBack}>退货</Button>
+          <Button type="primary" icon="printer" style={{ margin: '0 5px' }} onClick={this.printOrder}>打印快递单</Button>
         </div>
       </div>
       <Table
@@ -352,8 +328,8 @@ class OrderListFinish extends React.Component {
         pagination={pagination}
         loading={this.state.loading}
         onChange={this.handleTableChange}
-        scroll={{ x: 1500 }}
         rowSelection={rowSelection}
+        scroll={{ x: 1500 }}
         onRowClick={this.onRowClick}
       />
       <OrderDetail {...this.state.orderDetailData} />
@@ -362,4 +338,4 @@ class OrderListFinish extends React.Component {
   }
 }
 
-export default OrderListFinish;
+export default OrdersBack;

@@ -6,6 +6,7 @@ import { loginRequest } from 'REDUX/actions/user';
 import Logo from 'ASSETS/imgs/logo.svg';
 import store from 'REDUX/store/';
 import { setOpenKeys } from 'REDUX/actions/menu';
+import { cryptPwd } from 'UTILS';
 
 const FormItem = Form.Item;
 
@@ -25,7 +26,7 @@ class Login extends React.Component {
       if (!err) {
         this.props.login({
           username: this.state.username,
-          password: this.state.password
+          password: cryptPwd(this.state.password)
         });
       }
     });

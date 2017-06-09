@@ -50,7 +50,7 @@ const columns = [{
   width: 100,
   fixed: 'right'
 }];
-class OrderAssigned extends React.Component {
+class UnReturnVisitOrders extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -69,7 +69,7 @@ class OrderAssigned extends React.Component {
     };
   }
   componentDidMount() {
-    document.title = '已分配订单';
+    document.title = '未回访订单';
     this.request({
       page: 1,
       pageSize: 10
@@ -195,4 +195,4 @@ class OrderAssigned extends React.Component {
   }
 }
 
-export default OrderAssigned;
+export default UnReturnVisitOrders;

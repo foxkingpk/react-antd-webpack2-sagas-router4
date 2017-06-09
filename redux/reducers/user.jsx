@@ -10,7 +10,7 @@ const userReducer = (state = {
   statusText: '',
   isAdmin: false,
   userName: '',
-  showOrderDetail: false
+  showOrderDetail: true
 }, action) => {
   switch (action.type) {
     case LOGIN_REQUEST:
