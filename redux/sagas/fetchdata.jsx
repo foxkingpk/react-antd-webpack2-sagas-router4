@@ -5,7 +5,6 @@ import {
 } from 'redux-saga/effects';
 
 import API from 'API';
-import 'babel-polyfill';
 import { REQUEST_DATA } from 'REDUX/actions/actionstype';
 import { reciveData } from 'REDUX/actions/user';
 

@@ -1,6 +1,5 @@
 // saga 模块化引入
 import { fork, all } from 'redux-saga/effects';
-import 'babel-polyfill';
 
 // 异步逻辑
 import { signin } from './signin';

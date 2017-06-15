@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = function(env) {
   const config = {
     entry: {
+      polyfills: ['babel-polyfill'],
       main: './src/main.js',
       vendor: ['react', 'react-dom', 'react-router-dom', 'react-redux']
     },
@@ -74,7 +75,7 @@ module.exports = function(env) {
       }),
       // 提供公共代码
       new Webpack.optimize.CommonsChunkPlugin({
-        names: ['vendor', 'manifest']
+        names: ['main', 'vendor', 'polyfills']
       }),
       // compile time plugins
       new Webpack.DefinePlugin({
@@ -104,4 +105,4 @@ module.exports = function(env) {
     }));
   }
   return config;
-}
+};

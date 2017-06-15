@@ -4,7 +4,6 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 import API from 'API';
-import 'babel-polyfill';
 import { LOGOUT_REQUEST } from 'REDUX/actions/actionstype';
 import { logoutSuccess } from 'REDUX/actions/user';
 import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';

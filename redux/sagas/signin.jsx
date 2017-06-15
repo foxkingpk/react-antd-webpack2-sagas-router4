@@ -6,7 +6,6 @@ import {
 } from 'redux-saga/effects';
 
 import API from 'API';
-import 'babel-polyfill';
 import { LOGIN_REQUEST } from 'REDUX/actions/actionstype';
 import { loginSuccess, loginFailure } from 'REDUX/actions/user';
 import { setCurrentItem, setOpenKeys } from 'REDUX/actions/menu';
