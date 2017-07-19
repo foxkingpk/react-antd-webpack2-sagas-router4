@@ -1,13 +1,36 @@
 import React from 'react';
-import App from 'CONTAINERS/app';
+import App from './app';
 import { Route, Switch } from 'react-router-dom';
-import OrderList from 'COMPONENTS/orderlist';
-import OrderListBack from 'COMPONENTS/orderlist-back';
-import OrderListNew from 'COMPONENTS/orderlist-new';
-import OrderListFinish from 'COMPONENTS/orderlist-finish';
-import MsgOrderList from 'COMPONENTS/orderlist-msg';
-import NoMsgOrderList from 'COMPONENTS/orderlist-nomsg';
-import NoMatch from 'CONTAINERS/nomatch';
+// import OrderList from '../components/orderlist';
+// import OrderListBack from '../components/orderlist-back';
+// import OrderListNew from '../components/orderlist-new';
+// import OrderListFinish from '../components/orderlist-finish';
+// import MsgOrderList from '../components/orderlist-msg';
+// import NoMsgOrderList from '../components/orderlist-nomsg';
+import NoMatch from './nomatch';
+
+import Loadable from '../components/loading';
+
+const OrderList = Loadable({
+  loader: () => import('../components/orderlist')
+});
+const OrderListBack = Loadable({
+  loader: () => import('../components/orderlist-back')
+});
+const OrderListFinish = Loadable({
+  loader: () => import('../components/orderlist-finish')
+});
+const MsgOrderList = Loadable({
+  loader: () => import('../components/orderlist-msg')
+});
+const NoMsgOrderList = Loadable({
+  loader: () => import('../components/orderlist-nomsg')
+});
+const OrderListNew = Loadable({
+  loader: () => import('../components/orderlist-new')
+});
+
+
 
 const Express = () => {
   return (<div>

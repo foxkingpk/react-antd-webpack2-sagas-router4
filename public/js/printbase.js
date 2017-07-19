@@ -261,7 +261,7 @@
             { str: '{收件人联系电话}', count: (data.recmobile ? getStringCount(data.recmobile) : 0) },
             { str: '{寄件人联系电话}', eleSizeLim: 1, count: (data.sendmobile ? getStringCount(data.sendmobile) : 0) },
             { str: '{收件人邮政编码}', eleSizeLim: 1, count: (data.reczipcode ? getStringCount(data.reczipcode) : 0) },
-            { str: '{寄件人邮政编码}', eleSizeLim: 1, count: (data.sendzipcode ? getStringCount(data.sendzipcode) : 0) }
+            { str: '{寄件人邮政编码}', eleSizeLim: 1, count: (data.sendzipcode ? getStringCount(data.sendzipcode) : 0) }        
         ];
         setList = content.split('\n');
         //扫描上面的列表
@@ -339,7 +339,7 @@
         return setList.join('\n');
     };
 
-    var printContentReplace = kdPrintBase.printContentReplace = function(content, data, tempData) {
+    var printContentReplace = window.kdPrintBase.printContentReplace = function(content, data, tempData) {
         data.ad = ""; // 付费版去掉广告
         data.ad1 = ""; // 付费版去掉广告
         data.ad2 = ""; // 付费版去掉广告
@@ -363,11 +363,12 @@
         //注意，在调整字号之前，先在上面设置好最后要打印的字段内容
         //调整一些字段的字号，以更好适应字段所在区域
         var isEle = false;
-        if (tempData.name.indexOf("电子面单") >= 0) {
+        if (tempData.name && tempData.name.indexOf("电子面单") >= 0) {
             isEle = true;
         }
         content = resizeToFit(content, data, isEle);
 
+        content = content.replace(/{商品名称}/g, data.goodsName);
         content = content.replace(/{寄件人姓名}/g, data.sendName);
         content = content.replace(/{寄件人公司名称}/g, data.sendcompany);
         content = content.replace(/{寄件地址}/g, data.sendaddr); // 改版后sendaddr参数换成sendaddr2
@@ -389,6 +390,8 @@
         // content = content.replace(/{寄件人邮政编码}/g, "");
         if (data.sendzipcode) {
             content = content.replace(/{寄件人邮政编码}/g, data.sendzipcode);
+        } else {
+            content = content.replace(/{寄件人邮政编码}/g, "");
         }
 
 
@@ -413,6 +416,8 @@
         // content = content.replace(/{收件人邮政编码}/g, "");
         if (data.reczipcode) {
             content = content.replace(/{收件人邮政编码}/g, data.reczipcode);
+        } else {
+            content = content.replace(/{收件人邮政编码}/g, "");
         }
 
         content = content.replace(/{物品名称}/g, data.cargo);
@@ -563,7 +568,7 @@
         // }
 
         //右上角特殊处理
-        if (tempData.name.indexOf("电子面单") >= 0 && tempData.company != "shunfeng" && tempData.company != "ems" && tempData.company != "jd") {
+        if (tempData.name && tempData.name.indexOf("电子面单") >= 0 && tempData.company != "shunfeng" && tempData.company != "ems" && tempData.company != "jd") {
             if (data.payment == "CONSIGNEE" && data.collection) {
                 content += "LODOP.ADD_PRINT_SHAPE(4,10,240,140,50,0,1,\"#000000\");";
                 content += "LODOP.ADD_PRINT_TEXT(17,247,100,20,\"代收货款\");";

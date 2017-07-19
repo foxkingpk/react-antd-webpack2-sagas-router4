@@ -1,6 +1,6 @@
 import React from 'react';
-import App from 'CONTAINERS/app';
-import CDashBoard from 'COMPONENTS/dashboard';
+import App from './app';
+import CDashBoard from '../components/dashboard';
 
 const DashBoard = () => {
   return (<div>

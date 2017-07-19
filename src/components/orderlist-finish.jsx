@@ -1,8 +1,8 @@
 import React from 'react';
-import API from 'API';
+import API from '../api/index';
 import { Table, message, Button, Input, notification } from 'antd';
 
-import mLODOP from 'UTILS/print.js';
+import mLODOP from '../utils/print.js';
 import OrderDetail from './order-detail';
 import OrderPrintPreview from './order-print-preview';
 
@@ -294,7 +294,7 @@ class OrderListFinish extends React.Component {
         const printData = { ...receiverData, ...senderData, sendcity: reSendCity };
         mLODOP.printPurge(defaultPrinter);
         mLODOP.printResume(defaultPrinter);
-        const rTemplate = kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
+        const rTemplate = window.kdPrintBase.printContentReplace(tempdata.note, printData, tempdata);
         eval(rTemplate);
         if (!mLODOP.checkPrinter(defaultPrinter)) {
           notification.error({

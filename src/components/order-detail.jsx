@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import API from 'API';
+import API from '../api/index';
 import { connect } from 'react-redux';
 import { Tabs, Row, Col, Input, Table, Button, Form, Cascader, Select } from 'antd';
-import 'ASSETS/less/order-detail.less';
-import { toggleOrderDetail } from 'REDUX/actions/user';
-import city from 'UTILS/city';
+import '../assets/less/order-detail.less';
+import { toggleOrderDetail } from '../redux/actions/user';
+import city from '../utils/city';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;

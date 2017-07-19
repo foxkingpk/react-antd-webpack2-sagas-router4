@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Icon } from 'antd';
 import PropTypes from 'prop-types';
-import 'ASSETS/less/sender-new.less';
+import '../assets/less/sender-new.less';
 
 const SenderNew = (props) => {
   return (<Card className="senderNew" title="新增联系人" style={{ width: 300, height: 210 }}>

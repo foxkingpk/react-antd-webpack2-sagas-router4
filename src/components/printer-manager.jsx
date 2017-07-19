@@ -1,7 +1,7 @@
 import React from 'react';
 import { message, notification, Card } from 'antd';
-import API from 'API';
-import mLODOP from 'UTILS/print.js';
+import API from '../api/index';
+import mLODOP from '../utils/print.js';
 
 class PrinterManager extends React.Component {
   constructor() {
@@ -22,7 +22,7 @@ class PrinterManager extends React.Component {
       });
     });
     // if (mLODOP.getMLodop()) {
-    //   LODOP.Create_Printer_List(document.getElementById('printerChoose'));
+    //   window.LODOP.Create_Printer_List(document.getElementById('printerChoose'));
     // }
   }
   changeDefaultPrinter() {
@@ -38,15 +38,15 @@ class PrinterManager extends React.Component {
     let msg = '没有检测到打印插件，请确保打印程序已安装，或者打印程序已经启动运行！如需帮助，请联系029-90879090';
     let cmsg = msg;
     if (mLODOP.getMLodop()) {
-      if (LODOP.VERSION < '6.2.1.7') {
-        msg = '当前Lodop控件版本号：' + LODOP.VERSION + '需要升级至最新版本！';
+      if (window.LODOP.VERSION < '6.2.1.7') {
+        msg = '当前Lodop控件版本号：' + window.LODOP.VERSION + '需要升级至最新版本！';
       } else {
-        msg = '当前Lodop控件可用!Lodop版本号：' + LODOP.VERSION;
+        msg = '当前Lodop控件可用!Lodop版本号：' + window.LODOP.VERSION;
       }
-      if (CLODOP.CVERSION < '2.1.0.2') {
-        cmsg = '当前C-Lodop控件版本号：' + CLODOP.CVERSION + '需要升级至最新版本！';
+      if (window.CLODOP.CVERSION < '2.1.0.2') {
+        cmsg = '当前C-Lodop控件版本号：' + window.CLODOP.CVERSION + '需要升级至最新版本！';
       } else {
-        cmsg = '当前C-Lodop云打印可用!C-Lodop版本号：' + CLODOP.CVERSION;
+        cmsg = '当前C-Lodop云打印可用!C-Lodop版本号：' + window.CLODOP.CVERSION;
       }
     } else {
       cmsg = '';

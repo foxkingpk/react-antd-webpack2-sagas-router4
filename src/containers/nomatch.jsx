@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import 'ASSETS/less/nomatch.less';
+import '../assets/less/nomatch.less';
 
 const Nomatch = () => {
   return (<div className="nomatch">

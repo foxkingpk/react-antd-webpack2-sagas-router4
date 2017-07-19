@@ -1,24 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import Dashboard from 'CONTAINERS/Dashboard';
-import Orders from 'CONTAINERS/orders';
-import UserManger from 'CONTAINERS/usermanager';
-import Express from 'CONTAINERS/express';
-import Print from 'CONTAINERS/print';
-import Login from 'COMPONENTS/login';
-import NoMatch from 'CONTAINERS/nomatch';
-import store from 'REDUX/store/';
-import { init } from 'UTILS/init.js';
-
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Dashboard from './containers/dashboard';
+import Orders from './containers/orders';
+import UserManger from './containers/usermanager';
+import Express from './containers/express';
+import Print from './containers/print';
+import Login from './components/login';
+import NoMatch from './containers/nomatch';
+import store from './redux/store/';
+import { init } from './utils/init.js';
+import ScrollToTop from './containers/scroll-to-top';
 init(store);
 
 ReactDOM.render(
   <Provider store={store}>
-    {/*<BrowserRouter basename="/test">*/}
     <BrowserRouter>
-      <div>
+      <ScrollToTop>
         <Switch>
           <Route exact path="/login" component={Login} />
           <Route exact path="/dashboard" component={Dashboard} />
@@ -29,7 +28,7 @@ ReactDOM.render(
           <Route path="/print" component={Print} />
           <Route component={NoMatch} />
         </Switch>
-      </div>
+      </ScrollToTop>
     </BrowserRouter>
   </Provider>,
     document.getElementById('box')

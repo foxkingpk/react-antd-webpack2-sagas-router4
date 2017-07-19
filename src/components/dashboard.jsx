@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import 'ASSETS/less/dashboard.less';
-import avar from 'ASSETS/imgs/avar.gif';
-import store from 'REDUX/store/';
-import { setOpenKeys } from 'REDUX/actions/menu';
+import { Link } from 'react-router-dom';
+import '../assets/less/dashboard.less';
+import avar from '../assets/imgs/avar.gif';
+import store from '../redux/store/';
+import { setOpenKeys } from '../redux/actions/menu';
 
 class Dashboard extends React.Component {
   constructor() {
@@ -20,8 +20,8 @@ class Dashboard extends React.Component {
       console.log("dashborad22222")
       store.dispatch(setOpenKeys(['express', 'msgOrder']));
     }
-    return this.props.isAdmin ? <Redirect to="/orders/orderUnassign" /> : <Redirect to="/express/orderListNew/noMsgOrderList" />;
-    /*return (
+    // return this.props.isAdmin ? <Redirect to="/orders/orderUnassign" /> : <Redirect to="/express/orderListNew/noMsgOrderList" />;
+    return (
       <div className="dashboard">
         <div className="clearfix">
           <div className="avar">
@@ -43,7 +43,7 @@ class Dashboard extends React.Component {
           <a href="http://www.baidu.com" target="_blank" className="btn yellow-btn">搜索看看</a>
         </div>
       </div>
-    );*/
+    );
   }
 }
 function mapStateToProp(state) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import API from 'API';
+import API from '../api/index';
 import { Table, Input, message, Button } from 'antd';
 import UserAdd from './user-add';
 

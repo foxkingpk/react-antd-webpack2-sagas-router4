@@ -1,9 +1,9 @@
 import React from 'react';
-import App from 'CONTAINERS/app';
+import App from './app';
 import { Route, Switch } from 'react-router-dom';
-import NewUser from 'COMPONENTS/user-add.jsx';
-import UserList from 'COMPONENTS/userlist.jsx';
-import NoMatch from 'CONTAINERS/nomatch';
+import NewUser from '../components/user-add.jsx';
+import UserList from '../components/userlist.jsx';
+import NoMatch from './nomatch';
 
 const UserManager = () => {
   return (<div>

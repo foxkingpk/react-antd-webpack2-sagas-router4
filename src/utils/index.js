@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'crypto-browserify';
 
 // 使用随机值加盐，MD5加密
 export function cryptPwd(password) {

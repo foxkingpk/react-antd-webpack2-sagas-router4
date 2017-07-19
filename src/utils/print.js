@@ -2,7 +2,7 @@
 const getMLodop = () => {
   let mLODOP;
   try {
-    mLODOP = getCLodop();
+    mLODOP = window.getCLodop();
   } catch (err) {
       
   };
@@ -35,7 +35,7 @@ const checkPrinter = (printerName) => {
   if (n > 0) {
     let isExist = false;
     for (let i = 0; i < n; i++) {
-      const name = LODOP.GET_PRINTER_NAME(i);
+      const name = window.LODOP.GET_PRINTER_NAME(i);
       if (name === printerName) {
         isExist = true;
         break;
@@ -47,10 +47,10 @@ const checkPrinter = (printerName) => {
   }
 };
 const printResume = (id) => {
-  return LODOP.SET_PRINT_MODE('CONTROL_PRINTER:' + id, 'RESUME');
+  return window.LODOP.SET_PRINT_MODE('CONTROL_PRINTER:' + id, 'RESUME');
 }
 const printPurge = (id) => {
-  return LODOP.SET_PRINT_MODE('CONTROL_PRINTER:' + id, 'PURGE');
+  return window.LODOP.SET_PRINT_MODE('CONTROL_PRINTER:' + id, 'PURGE');
 };
 export default {
   getMLodop,

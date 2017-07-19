@@ -1,12 +1,12 @@
 import React from 'react';
-import App from 'CONTAINERS/app';
+import App from './app';
 import { Route, Switch } from 'react-router-dom';
-import OrderUnassign from 'COMPONENTS/order-unassign.jsx';
-import OrderAssigned from 'COMPONENTS/order-assigned.jsx';
-import OrdersBack from 'COMPONENTS/orders-back.jsx';
-import UnReturnVisitOrders from 'COMPONENTS/unreturn-visit-orders.jsx';
-import ReturnVisitOrders from 'COMPONENTS/return-visit-orders.jsx';
-import NoMatch from 'CONTAINERS/nomatch';
+import OrderUnassign from '../components/order-unassign.jsx';
+import OrderAssigned from '../components/order-assigned.jsx';
+import OrdersBack from '../components/orders-back.jsx';
+import UnReturnVisitOrders from '../components/unreturn-visit-orders.jsx';
+import ReturnVisitOrders from '../components/return-visit-orders.jsx';
+import NoMatch from './nomatch';
 
 const Orders = () => {
   return (<div>

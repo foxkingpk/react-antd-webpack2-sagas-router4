@@ -1,7 +1,7 @@
 import axios from 'axios';
 import qs from 'qs';
-import store from 'REDUX/store/';
-import { loginFailure } from 'REDUX/actions/user';
+import store from '../redux/store/';
+import { loginFailure } from '../redux/actions/user';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 
@@ -40,11 +40,7 @@ axios.interceptors.response.use(
             break;
         }
         // console.log(JSON.stringify(error));//console : Error: Request failed with status code 402
-        return Promise.reject({
-          status: error.response.status,
-          msg: error.response.data,
-          data: ''
-        });
+        return Promise.reject(error);
       }
     }
 );

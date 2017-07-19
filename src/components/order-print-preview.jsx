@@ -1,8 +1,8 @@
 import React from 'react';
-import API from 'API';
+import API from '../api/index';
 import { Modal, Button, Table, Form, Input, Select, InputNumber, message } from 'antd';
 import PropTypes from 'prop-types';
-import 'ASSETS/less/order-print-preview.less';
+import '../assets/less/order-print-preview.less';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -49,7 +49,7 @@ class OrderPrintPreview extends React.Component {
     this.handlePreview = this.handlePreview.bind(this);
   }
   componentDidMount() {
-    LODOP.Create_Printer_List(document.getElementById('printerChoose'));
+    window.LODOP.Create_Printer_List(document.getElementById('printerChoose'));
     const optionList = document.getElementsByTagName('option');
     const tempList = [];
     const length = optionList.length;

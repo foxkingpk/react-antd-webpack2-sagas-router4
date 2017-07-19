@@ -2,11 +2,11 @@ import React from 'react';
 import { Form, Button, Input, Icon } from 'antd';
 import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loginRequest } from 'REDUX/actions/user';
-import Logo from 'ASSETS/imgs/logo.svg';
-import store from 'REDUX/store/';
-import { setOpenKeys } from 'REDUX/actions/menu';
-import { cryptPwd } from 'UTILS';
+import { loginRequest } from '../redux/actions/user';
+import Logo from '../assets/imgs/logo.svg';
+import store from '../redux/store/';
+import { setOpenKeys } from '../redux/actions/menu';
+import { cryptPwd } from '../utils/index';
 
 const FormItem = Form.Item;
 

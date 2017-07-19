@@ -1,4 +1,4 @@
-import HTTP from 'HTTP';
+import HTTP from '../http/index';
 import {
   LoginResource,
   LogoutResource,

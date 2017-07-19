@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Badge } from 'antd';
-import 'ASSETS/less/sender-item.less';
+import '../assets/less/sender-item.less';
 import PropTypes from 'prop-types';
 
 const SenderItem = ({ props, editSenderDlg, delDlg }) => {

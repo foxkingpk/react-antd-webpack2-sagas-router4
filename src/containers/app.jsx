@@ -1,13 +1,12 @@
 import React from 'react';
-import axios from 'axios';
 import { Layout, Menu, Icon, Modal, Button, Input } from 'antd';
-import { Link, withRouter, Redirect } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { requestData, logoutRequest } from 'REDUX/actions/user';
-import { setCurrentItem, setOpenKeys, setMenuFold } from 'REDUX/actions/menu';
-// import 'MOCKJS';
-import 'ASSETS/less/app.less';
-import Logo from 'ASSETS/imgs/logo.svg';
+import { requestData, logoutRequest } from '../redux/actions/user';
+import { setCurrentItem, setOpenKeys, setMenuFold } from '../redux/actions/menu';
+import RecursiveMenus from '../utils/menu';
+import '../assets/less/app.less';
+import Logo from '../assets/imgs/logo.svg';
 
 const { Header, Sider, Footer, Content } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -23,7 +22,15 @@ class App extends React.Component {
       passwdDlg: false
     };
   }
-
+  componentDidMount() {
+    const location = this.props.location.pathname;
+    const arr = location.split('/');
+    if (arr[1] && arr[2] && arr[3]) {
+      this.props.setOpenKeys([arr[1], arr[2]]);
+    } else if (arr[1] && arr[2]) {
+      this.props.setOpenKeys([arr[1]]);
+    }
+  }
   onOpenChange(openKeys) {
     const latestOpenKey = openKeys.find(key => !(this.props.openKeys.indexOf(key) > -1));
     const latestCloseKey = this.props.openKeys.find(key => !(openKeys.indexOf(key) > -1));
@@ -72,17 +79,7 @@ class App extends React.Component {
     });
   }
   request(pageNumber) {
-    axios.get(`http://localhost/data${pageNumber}.txt`).then((response) => {
-      const { status } = response;
-      console.log(response);
-      return {
-        status,
-        data: response.data
-      };
-    }).then((data) => {
-      console.log(data);
-      this.setState({ loading: false, passwdDlg: false });
-    });
+    
   }
   send() {
     this.props.sendData();
@@ -105,17 +102,85 @@ class App extends React.Component {
     } : {};
     const location = this.props.location.pathname;
     const arr = location.split('/');
-    let defaultSelectedKeys = null;
-    if (arr[1] && arr[2] && arr[3]) {
-      defaultSelectedKeys = [arr[3]];
-    } else if (arr[1] && arr[2]) {
-      defaultSelectedKeys = [arr[2]];
-    } else if (arr[1]) {
-      defaultSelectedKeys = [arr[1]];
-    } else {
-      defaultSelectedKeys = [''];
-    }
-
+    const defaultSelectedKeys = arr[1] && arr[2] && arr[3] ? [arr[3]] : arr[1] && arr[2] ? [arr[2]] : arr[1] ? [arr[1]] : [''];
+    const notAdminMenu=[{
+      key: 'orderListNew',
+      path: '/express/orderListNew',
+      name: '未发货订单',
+      icon: 'meh-o',
+      children: [{
+        key: 'noMsgOrderList',
+        path: '/express/orderListNew/noMsgOrderList',
+        name: '无留言/备注'
+      }, {
+        key: 'msgOrderList',
+        path: '/express/orderListNew/msgOrderList',
+        name: '有留言/备注'
+      }]
+    }, {
+      key: 'orderListFinish',
+      path: '/express/orderListFinish',
+      name: '已发货订单',
+      icon: 'smile-o'
+    }, {
+      key: 'orderListBack',
+      path: '/express/orderListBack',
+      name: '退货订单',
+      icon: 'rollback'
+    }, {
+      key: 'orderList',
+      path: '/express/orderList',
+      name: '所有订单',
+      icon: 'solution'
+    }, {
+      key: 'senderSetting',
+      path: '/print/senderSetting',
+      name: '寄件人设置',
+      icon: 'user'
+    }, {
+      key: 'printerManager',
+      path: '/print/printerManager',
+      name: '打印机管理',
+      icon: 'printer'
+    }];
+    const adminMenu=[{
+      key: 'orders',
+      path: '/orders/list',
+      name: '我的订单',
+      icon: 'printer',
+      children: [{
+        key: 'orderUnassign',
+        path: '/orders/orderUnassign',
+        name: '未分配订单'
+      }, {
+        key: 'orderAssigned',
+        path: '/orders/orderAssigned',
+        name: '已分配订单'
+      },{
+        key: 'UnreturnVisitOrders',
+        path: '/orders/UnreturnVisitOrders',
+        name: '未回访订单'
+      }, {
+        key: 'ReturnVisitOrders',
+        path: '/orders/ReturnVisitOrders',
+        name: '已回访订单'
+      }, {
+        key: 'OrdersBack',
+        path: '/orders/OrdersBack',
+        name: '退货订单'
+      }]
+    }, {
+      key: 'userList',
+      path: '/user/userList',
+      name: '用户管理',
+      level: 0,
+      icon: 'user'
+    }, {
+      key: 'orderListBack',
+      path: '/express/orderListBack',
+      name: '已发货订单',
+      icon: 'phone'
+    }];
     return (<div style={{ height: '100vh' }}>
       <Layout>
         <Sider className="sider" style={{ backgroundColor: 'white', height: '100vh' }} collapsed={this.props.menuFold} onCollapse={this.onCollapse.bind(this)}>
@@ -123,58 +188,7 @@ class App extends React.Component {
             <img alt="logo" src={Logo} className="logo" />
           </div>
           <Menu {...menuProps} mode={this.props.menuFold ? 'vertical' : 'inline'} defaultSelectedKeys={defaultSelectedKeys} onClick={this.menuClick.bind(this)}>
-            {/*<Menu.Item key="dashboard"><Link to="/dashboard"><Icon type="home" /><span className="nav-text">首页</span></Link></Menu.Item>*/}
-            { this.props.isAdmin ? <SubMenu key="orders" title={<span><Icon type="solution" /><span className="nav-text">订单分配</span></span>}>
-              <Menu.Item key="orderUnassign">
-                <Link to="/orders/orderUnassign">未分配订单</Link>
-              </Menu.Item>
-              <Menu.Item key="orderAssigned">
-                <Link to="/orders/orderAssigned">已分配订单</Link>
-              </Menu.Item>
-            </SubMenu> : ''}
-            { this.props.isAdmin ? <SubMenu key="user" title={<span><Icon type="user" /><span className="nav-text">用户管理</span></span>}>
-              <Menu.Item key="userList">
-                <Link to="/user/userList">分配用户</Link>
-              </Menu.Item>
-            </SubMenu> : ''}
-            {this.props.isAdmin ? '' : <SubMenu key="express" title={<span><Icon type="schedule" /><span className="nav-text" style={{ marginLeft: 5 }}>我的订单</span></span>}>
-          
-              <SubMenu key="msgOrder" title="未发货订单">
-                <Menu.Item key="noMsgOrderList">
-                  <Link to="/express/orderListNew/noMsgOrderList">无留言/备注</Link>
-                </Menu.Item>
-                <Menu.Item key="msgOrderList">
-                  <Link to="/express/orderListNew/msgOrderList">有留言/备注</Link>
-                </Menu.Item>
-              </SubMenu>
-              <Menu.Item key="orderListFinish">
-                <Link to="/express/orderListFinish">已发货订单</Link>
-              </Menu.Item>
-              <Menu.Item key="orderListBack">
-                <Link to="/express/orderListBack">退货订单</Link>
-              </Menu.Item>
-              <Menu.Item key="orderList">
-                <Link to="/express/orderList">所有订单</Link>
-              </Menu.Item>
-            </SubMenu> }
-            {this.props.isAdmin ? '' : <SubMenu key="print" title={<span><Icon type="printer" /><span className="nav-text">打印设置</span></span>}>
-              <Menu.Item key="senderSetting">
-                <Link to="/print/senderSetting">寄件人设置</Link>
-              </Menu.Item>
-              <Menu.Item key="printerManager">
-                <Link to="/print/printerManager">打印机管理</Link>
-              </Menu.Item>
-            </SubMenu> }
-            {this.props.isAdmin ? <SubMenu key="orderfinish" title={<span><Icon type="phone" /><span className="nav-text">回访订单</span></span>}>
-              <Menu.Item key="UnreturnVisitOrders">
-                <Link to="/orders/UnreturnVisitOrders">未回访订单</Link>
-              </Menu.Item>
-              <Menu.Item key="ReturnVisitOrders">
-                <Link to="/orders/ReturnVisitOrders">已回访订单</Link>
-              </Menu.Item>
-            </SubMenu> : '' }
-            {this.props.isAdmin ? <Menu.Item key="ordersBack"><Link to="/orders/OrdersBack"><Icon type="rollback" /><span className="nav-text">退货订单</span></Link></Menu.Item> : ''}
-            
+            { this.props.isAdmin ? RecursiveMenus(adminMenu,false) : RecursiveMenus(notAdminMenu,false)}
           </Menu>
         </Sider>
         <Layout style={{ overflow: 'auto', height: '100vh' }}>

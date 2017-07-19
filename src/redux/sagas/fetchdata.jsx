@@ -4,9 +4,9 @@ import {
   takeEvery
 } from 'redux-saga/effects';
 
-import API from 'API';
-import { REQUEST_DATA } from 'REDUX/actions/actionstype';
-import { reciveData } from 'REDUX/actions/user';
+import API from '../../api/index';
+import { REQUEST_DATA } from '../actions/actionstype';
+import { reciveData } from '../actions/user';
 
 
 function fetchdata() {

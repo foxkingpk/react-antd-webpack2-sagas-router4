@@ -1,9 +1,9 @@
 import React from 'react';
-import App from 'CONTAINERS/app';
+import App from './app';
 import { Route, Switch } from 'react-router-dom';
-import PrinterManager from 'COMPONENTS/printer-manager.jsx';
-import SenderSetting from 'COMPONENTS/sender-setting.jsx';
-import NoMatch from 'CONTAINERS/nomatch';
+import PrinterManager from '../components/printer-manager.jsx';
+import SenderSetting from '../components/sender-setting.jsx';
+import NoMatch from './nomatch';
 
 const Print = () => {
   return (<div>

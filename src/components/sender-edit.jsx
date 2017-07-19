@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Form, Button, Input, Checkbox, Cascader } from 'antd';
-import city from 'UTILS/city';
-import 'ASSETS/less/dialog.less';
+import city from '../utils/city';
+import '../assets/less/dialog.less';
 import PropTypes from 'prop-types';
 
 const FormItem = Form.Item;

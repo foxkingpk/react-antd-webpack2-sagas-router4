@@ -1,5 +1,5 @@
 import React from 'react';
-import API from 'API';
+import API from '../api/index';
 import { Table, message, Input } from 'antd';
 import OrderDetail from './order-detail';
 
