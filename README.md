@@ -3,7 +3,7 @@
 # 说明
 >该项目是为了学习react、webpack、antd等相关技术栈而搭建的，希望能在学习的过程中，记录相关的问题。
 # 演示
-![演示](https://github.com/foxkingpk/react-antd-webpack2-sagas-router4/blob/master/assets/imgs/demo.gif?raw=true)
+![演示](https://github.com/foxkingpk/react-antd-webpack2-sagas-router4/blob/master/src/assets/imgs/demo.gif?raw=true)
 ## 安装
 进入源码主目录，运行`cnpm install`安装时，可能会比较慢。
 
@@ -38,7 +38,7 @@
 1. 如果编译出错，请删除node_modules目录，重新cnpm install再试。因为有些版本更新了依赖包，需要安装
 ## 初学知识点
 ### 一、create-react-app脚手架
-facebook官方推出的脚手架，功能还是很强大，对于新手开发完全够用了。具体配置请(点我)(https://github.com/facebookincubator/create-react-app)
+facebook官方推出的脚手架，功能还是很强大，对于新手开发完全够用了。具体配置请[点我](https://github.com/facebookincubator/create-react-app)
 
 ### 二、token机制
   在成功登录后，将获取的token保存在redux和localStorage中, 以后每次api请求时，将token带到http头里面。具体可参考`src/http/index.js`
